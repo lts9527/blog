@@ -1,5 +1,5 @@
 <template>
-  <v-app style="min-height:100vh;  background-color: #f6f7f9;">
+  <v-app style="min-height:100vh;">
     <v-main>
       <router-view />
     </v-main>
