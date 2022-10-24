@@ -11,69 +11,49 @@
     <div id="content">
       <v-card elevation="0">
         <v-tabs light fixed-tabs centered v-model="tab" background-color>
-          <v-tab v-for="item in items" :key="item.tab">{{ item.tab }}</v-tab>
+          <v-tab v-for="item in article" :key="item.category">{{ item.category }}</v-tab>
         </v-tabs>
         <v-tabs-items v-model="tab">
           <v-card-text>排序</v-card-text>
-
-            <v-tab-item>
-              <template v-for="(item, index) in article" >
-
-                  <a style="display: block;width: 100%;height: auto" href="#">test</a>
-                  <v-card flat>
-              <v-list-item three-line>
-
-                <v-list-item-content>
-                  <v-list-item-title v-html="item.title" class="text-h5"></v-list-item-title>
-                  <v-list-item-subtitle id="list-item-subtitle">
-                    {{item.content}}
-                  </v-list-item-subtitle>
-                  <v-btn disabled icon max-width="0" style="top: 25px;left: -70%">
-                    <v-icon small>mdi-eye</v-icon>
-                    <v-list-item-action-text v-html="0"></v-list-item-action-text>
-                  </v-btn>
-                  <v-btn disabled icon max-width="0" style="top: 24px;left: -60%">
-                    <v-icon small>mdi-thumb-up-outline</v-icon>
-                    <v-list-item-action-text v-html="0"></v-list-item-action-text>
-                  </v-btn>
-                  <v-btn disabled icon max-width="0" style="top:24px;left: -50%">
-                    <v-icon small>
-                      mdi-message-processing
-                    </v-icon>
-                    <v-list-item-action-text v-html="0"></v-list-item-action-text>
-                </v-btn>
-                </v-list-item-content>
-                <v-list-item-avatar height="88" width="117" tile size="80" color="grey"></v-list-item-avatar>
-              </v-list-item>
-              <div style="margin-top: -40px;height:50px;">
-                <v-list-item-avatar>
-                  <v-img src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
-                </v-list-item-avatar>
-                <v-list-item-action-text class="mb-12 ms-5">分类</v-list-item-action-text>
-              </div>
-              <v-divider class="mt-5"></v-divider>
+          <v-tab-item transition class="item-1" v-for="item in article" :key="item.category">
+            <v-card s flat v-for="item in item.list" :key="item.name">
+              <a id="article" href>
+                <div class="card box-shadow">
+                  <v-list-item three-line>
+                    <v-list-item-content>
+                      <v-list-item-title id="article-title" v-html="item.title" class="text-h5"></v-list-item-title>
+                      <v-list-item-subtitle id="list-item-subtitle">{{item.content}}</v-list-item-subtitle>
+                      <v-btn disabled icon max-width="0" style="top: 25px;left: -70%">
+                        <v-icon small>mdi-eye</v-icon>
+                        <v-list-item-action-text v-html="0"></v-list-item-action-text>
+                      </v-btn>
+                      <v-btn disabled icon max-width="0" style="top: 24px;left: -60%">
+                        <v-icon small>mdi-thumb-up-outline</v-icon>
+                        <v-list-item-action-text v-html="0"></v-list-item-action-text>
+                      </v-btn>
+                      <v-btn disabled icon max-width="0" style="top:24px;left: -50%">
+                        <v-icon small>mdi-message-processing</v-icon>
+                        <v-list-item-action-text v-html="0"></v-list-item-action-text>
+                      </v-btn>
+                    </v-list-item-content>
+                    <v-list-item-avatar height="88" width="117" tile color="grey"></v-list-item-avatar>
+                  </v-list-item>
+                  <div style="margin-top: -40px;height:50px;">
+                    <v-list-item-avatar>
+                      <v-img src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
+                    </v-list-item-avatar>
+                    <v-list-item-action-text
+                      style="color: rgba(0, 0, 0, 0.6);"
+                      class="mb-12 ms-5"
+                    >分类</v-list-item-action-text>
+                  </div>
+                  <v-divider class="mt-3"></v-divider>
+                </div>
+              </a>
             </v-card>
-
-          </template>
           </v-tab-item>
-
         </v-tabs-items>
       </v-card>
-      <!-- <v-card class="mx-auto" outlined>
-        <v-list-item three-line>
-          <v-list-item-content>
-            <div class="text-overline mb-4">OVERLINE</div>
-            <v-list-item-title class="text-h5 mb-1">Headline 5</v-list-item-title>
-            <v-list-item-subtitle>Greyhound divisely hello coldly fonwderfully</v-list-item-subtitle>
-          </v-list-item-content>
-
-          <v-list-item-avatar tile size="80" color="grey"></v-list-item-avatar>
-        </v-list-item>
-
-        <v-card-actions>
-          <v-btn outlined rounded text>Button</v-btn>
-        </v-card-actions>
-      </v-card>-->
     </div>
   </div>
 </template>
@@ -85,27 +65,43 @@ export default {
     return {
       title: "9527",
       tab: null,
-      items: [
-        { tab: "One", content: "Tab 1 Content" },
-        { tab: "Two", content: "Tab 2 Content" },
-        { tab: "Three", content: "Tab 3 Content" },
-        { tab: "Four", content: "Tab 4 Content" },
-        { tab: "Five", content: "Tab 5 Content" },
-      ],
       article: [
         {
-          stars: 0,
-          title: "test",
-          name: "tom",
-          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-          content: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+          category: "分类1",
+          list: [
+            {
+              stars: 0,
+              title: "test",
+              name: "tom",
+              avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+              content: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+            },
+            {
+              stars: 0,
+              title: "kubernetes 高可用部署工具:sealos",
+              name: "jack",
+              avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+              content: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+            },
+          ],
         },
         {
-          stars: 0,
-          title: "kubernetes 高可用部署工具:sealos",
-          name: "jack",
-          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-          content: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+          category: "分类2",
+          list: [
+            {
+              stars: 0,
+              title: "s",
+              name: "jack",
+              avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+              content: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+            },
+          ],
+        },
+        {
+          category: "分类3",
+        },
+        {
+          category: "分类4",
         },
       ],
     };
@@ -115,6 +111,14 @@ export default {
 </script>
 
 <style>
+.item-1 {
+  animation-play-state: paused;
+}
+
+#article:hover #article-title {
+  color: #2778ce;
+}
+
 #list-item-subtitle {
   margin-top: -30px;
   max-width: 500px;
@@ -137,4 +141,20 @@ export default {
 #home {
   margin: 0 auto;
 }
+
+/* 文章卡片悬浮 */
+/* .card {
+  background-color: #fff;
+  -webkit-transition: all 250ms cubic-bezier(0.02, 0.01, 0.47, 1);
+  transition: all 250ms cubic-bezier(0.02, 0.01, 0.47, 1);
+}
+
+.card:hover {
+  transform: translate(0, -1px);
+}
+
+.box-shadow {
+  -webkit-box-shadow: 0 0.25rem 1rem rgba(48, 55, 66, 0.15);
+  box-shadow: 0 4px 16px rgba(48, 55, 66, 0.15);
+} */
 </style>
