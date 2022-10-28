@@ -6,20 +6,18 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 
-// import iView from 'iview';
-import 'iview/dist/styles/iview.css';
-// Vue.use(iView);
+import './assets/css/global.css'
 
 import vuetify from './plugins/vuetify';
-import VuetifyDialog from 'vuetify-dialog'
-import 'vuetify-dialog/dist/vuetify-dialog.css'
+// import VuetifyDialog from 'vuetify-dialog'
+// import 'vuetify-dialog/dist/vuetify-dialog.css'
 
 
-Vue.use(VuetifyDialog, {
-  context: {
-    vuetify
-  },
-})
+// Vue.use(VuetifyDialog, {
+//   context: {
+//     vuetify
+//   },
+// })
 
 // html预览组件
 import VMdPreview from '@kangc/v-md-editor/lib/preview';
@@ -55,13 +53,6 @@ Vue.prototype.$scrollTo = (x = 0, y = 0, type = 'smooth') => {
     behavior: type // 滚动行为：smooth平滑滚动，instant瞬间滚动，默认值auto，等同于instant
   })
 }
-
-
-// import createCopyCodePlugin from '@kangc/v-md-editor/lib/plugins/copy-code/index';
-// import '@kangc/v-md-editor/lib/plugins/copy-code/copy-code.css';
-
-// VueMarkdownEditor.use(createCopyCodePlugin());
-// Vue.use(VMdPreview)
 
 Vue.config.productionTip = false;
 

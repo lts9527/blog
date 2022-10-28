@@ -485,21 +485,18 @@ Vue.use(VueMarkdownEditor);
       this.article.comments.inputbox.errorMessages = "";
     },
   },
-// 创建节点之前设置背景色
-beforeCreate() {
-    document.querySelector('div').setAttribute('style', 'background:#f6f7f9')
-
+  // 创建节点之前设置背景色
+  beforeCreate() {
+    document.querySelector("div").setAttribute("style", "background:#f6f7f9");
   },
-// 销毁节点之前删除属性
+  // 销毁节点之前删除属性
   beforeDestroy() {
-    document.querySelector('div').removeAttribute('style')
-
-  }
+    document.querySelector("div").removeAttribute("style");
+  },
 };
 </script>
   
 <style>
-
 #article-navigation:hover {
   color: #37a0d3;
 }

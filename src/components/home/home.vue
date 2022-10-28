@@ -1,5 +1,6 @@
 <template>
   <div id="home">
+    <topBar></topBar>
     <div id="home-head">
       <h1>{{ title }}</h1>
       <a href="#" title="9527的个人中心">
@@ -15,8 +16,8 @@
         </v-tabs>
         <v-tabs-items v-model="tab">
           <v-card-text>排序</v-card-text>
-          <v-tab-item transition class="item-1" v-for="item in article" :key="item.category">
-            <v-card s flat v-for="item in item.list" :key="item.name">
+          <v-tab-item transition="true" class="item-1" v-for="item in article" :key="item.category">
+            <v-card flat v-for="item in item.list" :key="item.name">
               <a id="article" href>
                 <div class="card box-shadow">
                   <v-list-item three-line>
@@ -59,8 +60,9 @@
 </template>
 
 <script>
+import topBar from "@/components/topNavigationBar/topBar.vue";
 export default {
-  name: "home",
+  // name: "home",
   data() {
     return {
       title: "9527",
@@ -107,6 +109,7 @@ export default {
     };
   },
   methods: {},
+  components: { topBar },
 };
 </script>
 
@@ -134,6 +137,10 @@ export default {
 #home-head-portrait {
   top: 10px;
 }
+#home-head h1 {
+  font-weight: bold;
+}
+
 #home-head {
   padding: 20px;
   text-align: center;

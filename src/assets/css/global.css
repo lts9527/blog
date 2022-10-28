@@ -1,0 +1,127 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+html {
+    overflow-y: auto;
+}
+
+a,
+address,
+b,
+big,
+blockquote,
+body,
+center,
+cite,
+code,
+dd,
+del,
+div,
+dl,
+dt,
+em,
+fieldset,
+font,
+html,
+i,
+iframe,
+img,
+ins,
+label,
+legend,
+li,
+ol,
+p,
+pre,
+small,
+span,
+strong,
+u,
+ul,
+var {
+    margin: 0;
+    padding: 0;
+    outline: none;
+}
+
+ul,
+li,
+ol {
+    list-style: none;
+    outline: none;
+}
+
+img,
+fieldset {
+    border: 0;
+}
+
+img {
+    display: block;
+    outline: none;
+}
+
+a {
+    text-decoration: none;
+    outline: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 100;
+}
+
+body {
+    font-size: 12px;
+    outline: none;
+}
+
+input,
+a {
+    outline: none;
+}
+
+em,
+i,
+u {
+    font-style: normal
+}
+
+.fl {
+    float: left
+}
+
+.fr {
+    float: right
+}
+
+.al {
+    text-align: left
+}
+
+.ac {
+    text-align: center
+}
+
+.ar {
+    text-align: right
+}
+
+.hide {
+    display: none
+}
+
+.clearfix::after {
+    content: "";
+    display: block;
+    clear: both;
+    width: 0;
+    height: 0;
+    visibility: hidden;
+}

@@ -1,5 +1,5 @@
 <template>
-  <v-app style="min-height:100vh;">
+  <v-app>
     <v-main>
       <router-view />
     </v-main>
@@ -9,7 +9,6 @@
 <script>
 export default {
   name: "App",
-  components: {},
   data: () => ({
     background: {
       //     // 背景图片地址
@@ -29,7 +28,7 @@ export default {
 </script>
 
 <style>
-body::before {
+/* body::before {
   content: " ";
   position: fixed;
   z-index: -1;
@@ -39,18 +38,5 @@ body::before {
   left: 0;
   background: #f6f7f9;
   background-size: 100% auto;
-}
-
-/* html {
-  width: 100%;
-  height: 100%;
-}
-body {
-  width: 100%;
-  height: 100%;
-}
-#app {
-  width: 100%;
-  height: 100%;
 } */
 </style>
