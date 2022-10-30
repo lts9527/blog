@@ -1,6 +1,6 @@
 <template>
   <div id="home">
-    <topBar></topBar>
+    <topBar @search="search"></topBar>
     <div id="home-head">
       <h1>{{ title }}</h1>
       <a href="#" title="9527的个人中心">
@@ -11,49 +11,78 @@
     </div>
     <div id="content">
       <v-card elevation="0">
-        <v-tabs light fixed-tabs centered v-model="tab" background-color>
-          <v-tab v-for="item in article" :key="item.category">{{ item.category }}</v-tab>
-        </v-tabs>
-        <v-tabs-items v-model="tab">
-          <v-card-text>排序</v-card-text>
-          <v-tab-item transition="true" class="item-1" v-for="item in article" :key="item.category">
-            <v-card flat v-for="item in item.list" :key="item.name">
-              <a id="article" href>
-                <div class="card box-shadow">
-                  <v-list-item three-line>
-                    <v-list-item-content>
-                      <v-list-item-title id="article-title" v-html="item.title" class="text-h5"></v-list-item-title>
-                      <v-list-item-subtitle id="list-item-subtitle">{{item.content}}</v-list-item-subtitle>
-                      <v-btn disabled icon max-width="0" style="top: 25px;left: -70%">
-                        <v-icon small>mdi-eye</v-icon>
-                        <v-list-item-action-text v-html="0"></v-list-item-action-text>
-                      </v-btn>
-                      <v-btn disabled icon max-width="0" style="top: 24px;left: -60%">
-                        <v-icon small>mdi-thumb-up-outline</v-icon>
-                        <v-list-item-action-text v-html="0"></v-list-item-action-text>
-                      </v-btn>
-                      <v-btn disabled icon max-width="0" style="top:24px;left: -50%">
-                        <v-icon small>mdi-message-processing</v-icon>
-                        <v-list-item-action-text v-html="0"></v-list-item-action-text>
-                      </v-btn>
-                    </v-list-item-content>
-                    <v-list-item-avatar height="88" width="117" tile color="grey"></v-list-item-avatar>
+        <v-tabs centered style="padding: 0 0;">
+          <v-container v-for="item in items" :key="item.title" class="pa-2" outlined tile>
+            <!-- <div class="text-center"> -->
+            <v-menu transition="fade-transition" open-on-hover top offset-y>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn elevation="0" v-bind="attrs" v-on="on">{{item.title}}</v-btn>
+              </template>
+              <v-list>
+                <template v-for="subtitle in item.subtitle">
+                  <v-list-item dense v-if="subtitle" :key="subtitle" link>
+                    <v-list-item-title @click="setlist(subtitle)" v-text="subtitle"></v-list-item-title>
                   </v-list-item>
-                  <div style="margin-top: -40px;height:50px;">
-                    <v-list-item-avatar>
-                      <v-img src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
-                    </v-list-item-avatar>
-                    <v-list-item-action-text
-                      style="color: rgba(0, 0, 0, 0.6);"
-                      class="mb-12 ms-5"
-                    >分类</v-list-item-action-text>
-                  </div>
-                  <v-divider class="mt-3"></v-divider>
-                </div>
-              </a>
-            </v-card>
-          </v-tab-item>
-        </v-tabs-items>
+                </template>
+              </v-list>
+            </v-menu>
+            <!-- </div> -->
+          </v-container>
+        </v-tabs>
+        <v-card-text>排序</v-card-text>
+        <!-- <v-container v-for="items in article" :key="items.category"> -->
+        <!-- <template v-if="comparison(items.category)"> -->
+
+        <v-card flat v-if="templist == false">
+          <div class="card box-shadow">
+            <v-list-item three-line>
+              <v-list-item-content>
+                <v-list-item-title style="text-align: center;" class="text-h5">分类列表为空</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </div>
+        </v-card>
+
+        <v-card flat v-for="item in templist" :key="item.name">
+          <a id="article" @click="sed(templist)">
+            <div class="card box-shadow">
+              <v-list-item three-line>
+                <v-list-item-content>
+                  <v-list-item-title
+                    v-if="templist === false"
+                    id="article-title"
+                    v-html="title"
+                    class="text-h5"
+                  ></v-list-item-title>
+                  <v-list-item-title id="article-title" v-html="item.title" class="text-h5"></v-list-item-title>
+                  <v-list-item-subtitle id="list-item-subtitle">{{item.content}}</v-list-item-subtitle>
+                  <v-btn disabled icon max-width="0" style="top: 25px;left: -70%">
+                    <v-icon small>mdi-eye</v-icon>
+                    <v-list-item-action-text v-html="0"></v-list-item-action-text>
+                  </v-btn>
+                  <v-btn disabled icon max-width="0" style="top: 24px;left: -60%">
+                    <v-icon small>mdi-thumb-up-outline</v-icon>
+                    <v-list-item-action-text v-html="0"></v-list-item-action-text>
+                  </v-btn>
+                  <v-btn disabled icon max-width="0" style="top:24px;left: -50%">
+                    <v-icon small>mdi-message-processing</v-icon>
+                    <v-list-item-action-text v-html="0"></v-list-item-action-text>
+                  </v-btn>
+                </v-list-item-content>
+                <v-list-item-avatar height="88" width="117" tile color="grey"></v-list-item-avatar>
+              </v-list-item>
+              <div style="margin-top: -40px;height:50px;">
+                <v-list-item-avatar>
+                  <v-img src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
+                </v-list-item-avatar>
+                <v-list-item-action-text style="color: rgba(0, 0, 0, 0.6);" class="mb-12 ms-5">分类</v-list-item-action-text>
+              </div>
+              <v-divider class="mt-3"></v-divider>
+            </div>
+          </a>
+        </v-card>
+        <!-- </template> -->
+        <!-- </v-container> -->
       </v-card>
     </div>
   </div>
@@ -65,11 +94,43 @@ export default {
   // name: "home",
   data() {
     return {
+      arr: "",
+      btns: [["Large", "lg"]],
+      show: true,
+      items: [
+        {
+          title: "分类1",
+          subtitle: ["分类1-1", "分类1-2"],
+        },
+        {
+          title: "分类2",
+          subtitle: ["分类2-1", "分类2-2"],
+        },
+        {
+          title: "分类3",
+          subtitle: ["分类3-1", "分类3-2", "分类3-3", "分类3-4"],
+        },
+        {
+          title: "分类4",
+          subtitle: ["分类4-1", "分类4-2", "分类4-3"],
+        },
+        {
+          title: "分类5",
+          subtitle: ["分类5-1", "分类5-2", "分类5-3", "分类5-4"],
+        },
+        {
+          title: "分类6",
+          subtitle: ["分类6-1", "分类6-2", "分类6-3", "分类6-4"],
+        },
+        {
+          title: "分类7",
+          subtitle: ["分类6-1", "分类6-2", "分类6-3", "分类6-4"],
+        },
+      ],
       title: "9527",
-      tab: null,
       article: [
         {
-          category: "分类1",
+          category: "分类1-1",
           list: [
             {
               stars: 0,
@@ -88,7 +149,7 @@ export default {
           ],
         },
         {
-          category: "分类2",
+          category: "分类1-2",
           list: [
             {
               stars: 0,
@@ -99,16 +160,84 @@ export default {
             },
           ],
         },
+      ],
+      templist: [
         {
-          category: "分类3",
+          stars: 0,
+          title: "test",
+          name: "tom",
+          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+          content: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
         },
         {
-          category: "分类4",
+          stars: 0,
+          title: "kubernetes 高可用部署工具:sealos",
+          name: "1",
+          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+          content: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+        },
+        {
+          stars: 0,
+          title: "1",
+          name: "mari",
+          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+          content: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+        },
+        {
+          stars: 0,
+          title: "2",
+          name: "2",
+          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+          content: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
         },
       ],
     };
   },
-  methods: {},
+  methods: {
+    comparison(key) {
+      // let num = 0;
+      // let tt = false;
+      // for (let title in this.items) {
+      //   for (let j in this.items[title].subtitle) {
+      //     if (key === this.items[title].subtitle[j]) {
+      //       tt = true;
+      //       console.log(key);
+      //       console.log("subtitle", this.items[title].subtitle[j]);
+      //     }
+      //     num++;
+      //   }
+      // }
+      // console.log(num);
+      // return tt;
+    },
+    setlist(key) {
+      this.templist = [];
+      for (let i in this.article) {
+        if (key === this.article[i].category) {
+          let temparr = this.article[i].list;
+          this.templist = temparr;
+        }
+      }
+    },
+    sed(arr) {
+      // console.log(this.templist);
+      console.log(arr);
+    },
+    check() {
+      templist.length === 0;
+    },
+    search(value) {
+      console.log(this.templist);
+      for (let i in this.templist) {
+        if (this.templist[i].title.indexOf(value) != -1) {
+          let templist = this.templist[i];
+          this.templist = [];
+          this.templist.push(templist);
+          return;
+        }
+      }
+    },
+  },
   components: { topBar },
 };
 </script>
@@ -139,6 +268,8 @@ export default {
 }
 #home-head h1 {
   font-weight: bold;
+  /* text-align: center; */
+  /* margin-left: 40px; */
 }
 
 #home-head {

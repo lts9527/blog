@@ -1,47 +1,75 @@
 <template>
+  <!-- <div>
+    <button type="button" v-on:click="click">点击一下</button>
+    {{ value }}
+  </div>-->
   <v-card style="margin: auto;" elevation="1" width="100%" height="64">
-    <v-btn id="bar" top plain icon style="left: 70px;">
+    <v-btn class="bar" top icon>
       <v-icon large>mdi-arch</v-icon>
-      <v-list-item-action-text v-html="test"></v-list-item-action-text>
+      <v-list-item-action-text v-html="title"></v-list-item-action-text>
     </v-btn>
 
     <v-text-field
       class="field"
       append-icon="mdi-magnify"
       placeholder="搜索"
+      v-model="inputvalue"
+      @keydown.enter="search(inputvalue)"
       filled
       rounded
       clearable
       dense
     ></v-text-field>
 
-    <v-row justify="space-around">
-      <v-menu v-for="([text, rounded]) in btns" :key="text" :rounded="rounded" offset-y>
-        <template v-slot:activator="{ attrs, on }">
-          <v-btn v-bind="attrs" v-on="on" id="category-list" top fixed plain style="right: 200px;">
-            分类
-            <v-icon small dense>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-          </v-btn>
+    <!-- <v-row justify="space-around"> -->
+    <v-menu
+      open-on-hover
+      @mouseenter="show =!show"
+      @mouseleave="show =!show"
+      v-for="([text, rounded]) in btns"
+      :key="text"
+      :rounded="rounded"
+      offset-y
+    >
+      <template v-slot:activator="{ attrs, on }">
+        <v-btn
+          top
+          @mouseenter="show =!show"
+          v-bind="attrs"
+          v-on="on"
+          @click="ss(on)"
+          v-on:on:@mouseenter="ss(on)"
+          class="category-list"
+          plain
+        >
+          分类
+          <v-icon small dense>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+        </v-btn>
+      </template>
+      <v-list width="250" height="auto">
+        <template v-for="item in items">
+          <v-subheader v-if="item.title" v-text="item.title" :key="item.title"></v-subheader>
+          <v-divider v-if="item.divider" :key="item.title"></v-divider>
+          <v-list-item
+            style="font-size: 0.8125rem;font-weight: 500;line-height: 1rem;"
+            v-for="subtitle in item.subtitle"
+            :key="subtitle"
+            link
+          >
+            <v-list-item-title v-text="subtitle"></v-list-item-title>
+          </v-list-item>
         </template>
-        <v-list width="250" height="auto">
-          <template v-for="item in items">
-            <v-subheader v-if="item.title" v-text="item.title" :key="item.title"></v-subheader>
-            <v-divider v-if="item.divider" :key="item.title"></v-divider>
-            <v-list-item v-for="subtitle in item.subtitle" :key="subtitle" link>
-              <v-list-item-title v-text="subtitle"></v-list-item-title>
-            </v-list-item>
-          </template>
-        </v-list>
-      </v-menu>
-    </v-row>
+      </v-list>
+    </v-menu>
+    <!-- </v-row> -->
 
-    <v-btn top fixed plain icon style="right: 150px;">
+    <v-btn class="lang-btn" top plain icon>
       <v-icon>mdi-translate</v-icon>
     </v-btn>
-    <v-btn top fixed plain icon style="right: 110px;">
+    <v-btn class="theme-btn" top plain icon>
       <v-icon>mdi-brightness-7</v-icon>
     </v-btn>
-    <v-btn top fixed plain icon style="right: 70px">
+    <v-btn class="github-btn" top plain icon>
       <v-icon>mdi-github</v-icon>
     </v-btn>
   </v-card>
@@ -49,9 +77,11 @@
 
 <script>
 export default {
+  // props: ["value"],
   data() {
     return {
-      test: "The Algorithms",
+      value: "",
+      title: "The Algorithms",
       show: false,
       btns: [["Large", "lg"]],
       colors: ["deep-purple accent-4"],
@@ -72,18 +102,56 @@ export default {
           subtitle: ["分类3-1", "分类3-2", "分类3-3", "分类3-4"],
         },
       ],
+      inputvalue: "",
     };
   },
   methods: {
-    ss() {
-      alert("test");
+    ss(on) {
+      console.log(on);
+      on.mouseenter();
+    },
+    search(value) {
+      this.$emit("search", value);
     },
   },
 };
 </script>
 
 <style scoped>
-#category-list:hover {
+.github-btn {
+  display: flex;
+  position: relative;
+  bottom: 170px;
+  right: -91%;
+  /* float: right; */
+  /* padding: 0 !important; */
+}
+
+.theme-btn {
+  display: flex;
+  position: relative;
+  bottom: 133px;
+  right: -88%;
+  /* float: right; */
+  /* padding: 0 !important; */
+}
+
+.lang-btn {
+  display: flex;
+  position: relative;
+  bottom: 97px;
+  right: -85%;
+  /* float: right; */
+  /* padding: 0 !important; */
+}
+
+.category-list {
+  display: flex;
+  position: relative;
+  bottom: 62px;
+  right: -80%;
+  /* float: right; */
+  padding: 0 !important;
 }
 
 .field {
@@ -93,12 +161,13 @@ export default {
   bottom: 25px;
 }
 
-#bar {
+.bar {
   display: flex;
   position: relative;
   align-items: center;
   padding: 0 !important;
   justify-content: space-between;
   top: 25%;
+  left: 70px;
 }
 </style>
