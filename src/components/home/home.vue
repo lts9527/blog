@@ -16,20 +16,48 @@
             <!-- <div class="text-center"> -->
             <v-menu transition="fade-transition" open-on-hover top offset-y>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn elevation="0" v-bind="attrs" v-on="on">{{item.title}}</v-btn>
+                <v-btn :color="item.color" elevation="0" v-bind="attrs" v-on="on">{{item.title}}</v-btn>
               </template>
               <v-list>
-                <template v-for="subtitle in item.subtitle">
-                  <v-list-item dense v-if="subtitle" :key="subtitle" link>
-                    <v-list-item-title @click="setlist(subtitle)" v-text="subtitle"></v-list-item-title>
+                <!-- <v-list-item-group> -->
+                  <v-list-item @click="setlist(item.title, subtitle)" dense  :key="i" v-for="subtitle,i in item.subtitle">
+                    <v-list-item-content>
+                    <v-list-item-title v-text="subtitle"></v-list-item-title>
+                  </v-list-item-content>
                   </v-list-item>
-                </template>
+              <!-- </v-list-item-group> -->
               </v-list>
             </v-menu>
             <!-- </div> -->
           </v-container>
         </v-tabs>
-        <v-card-text>排序</v-card-text>
+        <!-- <v-card-text>排序</v-card-text> -->
+
+        <v-menu
+      open-on-hover
+      offset-y
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          color=""
+          v-bind="attrs"
+          v-on="on"
+          icon
+        >
+        排序<v-icon small dense>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item link
+          v-for="(item, index) in items"
+          :key="index"
+        >
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+
+
         <!-- <v-container v-for="items in article" :key="items.category"> -->
         <!-- <template v-if="comparison(items.category)"> -->
 
@@ -97,33 +125,41 @@ export default {
       arr: "",
       btns: [["Large", "lg"]],
       show: true,
+      color: "success",
       items: [
         {
           title: "分类1",
+          color: "",
           subtitle: ["分类1-1", "分类1-2"],
         },
         {
           title: "分类2",
+          color: "",
           subtitle: ["分类2-1", "分类2-2"],
         },
         {
           title: "分类3",
+          color: "",
           subtitle: ["分类3-1", "分类3-2", "分类3-3", "分类3-4"],
         },
         {
           title: "分类4",
+          color: "",
           subtitle: ["分类4-1", "分类4-2", "分类4-3"],
         },
         {
           title: "分类5",
+          color: "",
           subtitle: ["分类5-1", "分类5-2", "分类5-3", "分类5-4"],
         },
         {
           title: "分类6",
+          color: "",
           subtitle: ["分类6-1", "分类6-2", "分类6-3", "分类6-4"],
         },
         {
           title: "分类7",
+          color: "",
           subtitle: ["分类6-1", "分类6-2", "分类6-3", "分类6-4"],
         },
       ],
@@ -210,12 +246,21 @@ export default {
       // console.log(num);
       // return tt;
     },
-    setlist(key) {
+    setlist(title, key) {
       this.templist = [];
       for (let i in this.article) {
         if (key === this.article[i].category) {
           let temparr = this.article[i].list;
           this.templist = temparr;
+        }
+      }
+      for (let i in this.items) {
+        this.items[i].color = ""
+      }
+      for (let i in this.items) {
+        if (title === this.items[i].title) {
+          this.items[i].color = "success"
+          break;
         }
       }
     },
