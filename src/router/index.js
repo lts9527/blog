@@ -32,6 +32,20 @@ const routes = [
             path: 'upload/text/edit',
             name: 'upload',
             component: () => import('@/components/article/edit/editor.vue'),
+          },
+          {
+            path: "manager",
+            name: "manager",
+            component: {
+              render: c => c("router-view"),
+            },
+            children: [
+              {
+                path: 'text',
+                name: 'manager-text',
+                component: () => import('@/views/platform/upload/manager/text.vue'),
+              }
+            ]
           }
         ]
       },

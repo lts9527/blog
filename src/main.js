@@ -9,15 +9,15 @@ import store from './store';
 import './assets/css/global.css'
 
 import vuetify from './plugins/vuetify';
-// import VuetifyDialog from 'vuetify-dialog'
-// import 'vuetify-dialog/dist/vuetify-dialog.css'
+import VuetifyDialog from 'vuetify-dialog'
+import 'vuetify-dialog/dist/vuetify-dialog.css'
 
 
-// Vue.use(VuetifyDialog, {
-//   context: {
-//     vuetify
-//   },
-// })
+Vue.use(VuetifyDialog, {
+  context: {
+    vuetify
+  },
+})
 
 // html预览组件
 import VMdPreview from '@kangc/v-md-editor/lib/preview';

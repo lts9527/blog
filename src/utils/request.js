@@ -12,7 +12,7 @@ service.interceptors.request.use((config) => {
   Object.assign(config.headers, { Authorization: `Bearer ${storageService.get(storageService.USER_TOKEN)}` });
   return config;
 }, (error) =>
-// Do something with request error
+  // Do something with request error
   Promise.reject(error));
 
 export default service;

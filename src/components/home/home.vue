@@ -13,50 +13,39 @@
       <v-card elevation="0">
         <v-tabs centered style="padding: 0 0;">
           <v-container v-for="item in items" :key="item.title" class="pa-2" outlined tile>
-            <!-- <div class="text-center"> -->
             <v-menu transition="fade-transition" open-on-hover top offset-y>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn :color="item.color" elevation="0" v-bind="attrs" v-on="on">{{item.title}}</v-btn>
               </template>
               <v-list>
-                <!-- <v-list-item-group> -->
-                  <v-list-item @click="setlist(item.title, subtitle)" dense  :key="i" v-for="subtitle,i in item.subtitle">
-                    <v-list-item-content>
+                <v-list-item
+                  @click="setlist(item.title, subtitle)"
+                  dense
+                  :key="i"
+                  v-for="subtitle,i in item.subtitle"
+                >
+                  <v-list-item-content>
                     <v-list-item-title v-text="subtitle"></v-list-item-title>
                   </v-list-item-content>
-                  </v-list-item>
-              <!-- </v-list-item-group> -->
+                </v-list-item>
               </v-list>
             </v-menu>
-            <!-- </div> -->
           </v-container>
         </v-tabs>
-        <!-- <v-card-text>排序</v-card-text> -->
 
-        <v-menu
-      open-on-hover
-      offset-y
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          color=""
-          v-bind="attrs"
-          v-on="on"
-          icon
-        >
-        排序<v-icon small dense>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-        </v-btn>
-      </template>
-      <v-list>
-        <v-list-item link
-          v-for="(item, index) in items"
-          :key="index"
-        >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
-
+        <v-menu offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn class="mt-4" text plain v-bind="attrs" v-on="on">
+              排序
+              <v-icon small dense>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item link v-for="(item, index) in items" :key="index">
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
 
         <!-- <v-container v-for="items in article" :key="items.category"> -->
         <!-- <template v-if="comparison(items.category)"> -->
@@ -76,12 +65,12 @@
             <div class="card box-shadow">
               <v-list-item three-line>
                 <v-list-item-content>
-                  <v-list-item-title
+                  <!-- <v-list-item-title
                     v-if="templist === false"
                     id="article-title"
                     v-html="title"
                     class="text-h5"
-                  ></v-list-item-title>
+                  ></v-list-item-title>-->
                   <v-list-item-title id="article-title" v-html="item.title" class="text-h5"></v-list-item-title>
                   <v-list-item-subtitle id="list-item-subtitle">{{item.content}}</v-list-item-subtitle>
                   <v-btn disabled icon max-width="0" style="top: 25px;left: -70%">
@@ -255,11 +244,11 @@ export default {
         }
       }
       for (let i in this.items) {
-        this.items[i].color = ""
+        this.items[i].color = "";
       }
       for (let i in this.items) {
         if (title === this.items[i].title) {
-          this.items[i].color = "success"
+          this.items[i].color = "success";
           break;
         }
       }

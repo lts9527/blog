@@ -4,8 +4,8 @@
     {{ value }}
   </div>-->
   <v-card style="margin: auto;" elevation="1" width="100%" height="64">
-    <v-btn class="bar" top icon>
-      <v-icon large>mdi-arch</v-icon>
+    <v-btn class="bar" top plain>
+      <v-icon @click="next" large>mdi-arch</v-icon>
       <v-list-item-action-text v-html="title"></v-list-item-action-text>
     </v-btn>
 
@@ -112,6 +112,9 @@ export default {
     },
     search(value) {
       this.$emit("search", value);
+    },
+    next() {
+      alert("test");
     },
   },
 };

@@ -31,7 +31,14 @@
               <v-card height="400px">
                 <v-card-title style="margin-left: 13px;">选择文章分类</v-card-title>
                 <v-row justify="space-around">
-                  <v-menu v-for="obj in btns" :key="obj.name" :rounded="obj.rounded" offset-y>
+                  <v-menu
+                    v-for="obj in btns"
+                    :key="obj.name"
+                    offset-y
+                    transition="fade-transition"
+                    open-on-hover
+                    top
+                  >
                     <template v-slot:activator="{ attrs, on }">
                       <v-btn
                         :color="obj.color"
@@ -41,11 +48,15 @@
                         v-on="on"
                       >{{ obj.name }}</v-btn>
                     </template>
-                    <v-list>
-                      <v-list-item v-for="item in getArray(obj)" :key="item" link>
-                        <v-list-item-title @click="setCategory(item)" v-text="item"></v-list-item-title>
-                      </v-list-item>
-                    </v-list>
+                    <template v-for="subtitle,i in getArray(obj)">
+                      <v-list v-if="subtitle" :key="subtitle" style="padding: 0;">
+                        <v-list-item dense @click="setCategory(subtitle)" :key="i">
+                          <v-list-item-content>
+                            <v-list-item-title v-text="subtitle"></v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </v-list>
+                    </template>
                   </v-menu>
                   <v-card-text style="margin-left: 3%;">当前选择的分类: {{ CurrentCategory }}</v-card-text>
                 </v-row>
@@ -83,7 +94,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-        <v-btn v-on:click="test" color="primary" style="top: 30px; left:55px">发布文章</v-btn>
+        <v-btn v-on:click="create" color="primary" style="top: 30px; left:55px">发布文章</v-btn>
         <v-btn style="top: 30px; margin-left:80px">存草稿</v-btn>
       </v-virtual-scroll>
     </v-card>
@@ -91,12 +102,15 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
       show: false,
       article: {
-        title: "",
+        user_id: 9527,
+        category_id: 0,
+        title: "test",
         content: `\`\`\`js
 import Vue from 'vue';
 import VueMarkdownEditor from '@kangc/v-md-editor';
@@ -108,35 +122,36 @@ VueMarkdownEditor.use(vuepressTheme);
 Vue.use(VueMarkdownEditor);
 \`\`\`
 `,
+        tags: [],
       },
       btns: [
-        {
-          name: "前端",
-          rounded: "0",
-          color: "",
-          label: ["vue", "react", "javascript"],
-        },
-        {
-          name: "后端",
-          rounded: "lg",
-          color: "",
-          label: ["go", "rust", "java", "php"],
-        },
-        {
-          name: "运维",
-          rounded: "lg",
-          color: "",
-          label: ["k8s", "docker", "nginx", "linux"],
-        },
-        {
-          name: "中间件",
-          rounded: "0",
-          color: "",
-          label: ["mysql", "redis", "etcd", "mq"],
-        },
+        // {
+        //   name: "前端",
+        //   rounded: "0",
+        //   color: "",
+        //   sub_catgory: ["vue", "react", "javascript"],
+        // },
+        // {
+        //   name: "后端",
+        //   rounded: "lg",
+        //   color: "",
+        //   sub_catgory: ["go", "rust", "java", "php"],
+        // },
+        // {
+        //   name: "运维",
+        //   rounded: "lg",
+        //   color: "",
+        //   sub_catgory: ["k8s", "docker", "nginx", "linux"],
+        // },
+        // {
+        //   name: "中间件",
+        //   rounded: "0",
+        //   color: "",
+        //   sub_catgory: ["mysql", "redis", "etcd", "mq"],
+        // },
       ],
       CurrentCategory: "",
-      tags: ["Work", "Home Improvement"],
+      tags: ["test"],
       inputValue: "",
       rules: [
         // (value) => !!value || "Required.",
@@ -148,9 +163,7 @@ Vue.use(VueMarkdownEditor);
         //   return pattern.test(value) || "Invalid e-mail.";
         // },
       ],
-      // tagslen: this.getLen(["Work", "Home Improvement"]),
-      // tagslen: this.getLen(),
-      tagslen: 8,
+      tagslen: 9,
       errormsg: "",
       tagcolor: "primary",
       benched: 0,
@@ -165,22 +178,75 @@ Vue.use(VueMarkdownEditor);
     },
   },
   watch: {},
+  // 创建节点之前
+  created() {
+    mapActions("articleModule", {
+      articleList: "list",
+    });
+    // 请求api
+    this.articleList(9527)
+      .then((list) => {
+        this.btns = list;
+      })
+      .catch((err) => {
+        console.log("get article list err:", err.response.data.message);
+      });
+  },
   methods: {
+    ...mapActions("articleModule", {
+      articleCreate: "create",
+      articleList: "list",
+    }),
+    create() {
+      if (this.article.category_id === 0) {
+        alert("请选择分类");
+        return;
+      }
+      this.article["tags"] = this.tags;
+      console.log("this.article", this.article);
+      // 请求api
+      this.articleCreate(this.article)
+        .then((articleID) => {
+          // 跳转首页
+          // this.$router.replace({ name: "Home" });
+          console.log("article id:", articleID);
+          this.$dialog.notify.success("创建成功", {
+            position: "top-right",
+            timeout: 2000,
+          });
+        })
+        .catch((err) => {
+          if (err.response.data.hasOwnProperty(err.response.data.message)) {
+            this.$dialog.notify.error(err.response.data.message, {
+              position: "top-right",
+              timeout: 2000,
+            });
+            return;
+          }
+          this.$dialog.notify.error("创建文章失败，请重试", {
+            position: "top-right",
+            timeout: 2000,
+          });
+        });
+    },
     getArray(obj) {
       for (var i in this.btns) {
         if (obj.name === this.btns[i].name) {
-          return this.btns[i].label;
+          if (this.btns[i].hasOwnProperty("sub_category")) {
+            return this.btns[i].sub_category;
+          }
         }
       }
+      return undefined;
     },
     setCategory(name) {
       for (var i in this.btns) {
-        for (var j in this.btns[i].label) {
-          if (name === this.btns[i].label[j]) {
+        for (var j in this.btns[i].sub_category) {
+          if (name === this.btns[i].sub_category[j]) {
             this.Identification = !this.Identification;
             this.btns[i].color = "primary";
-            this.CurrentCategory =
-              this.btns[i].name + " => " + this.btns[i].label[j];
+            this.btns[i].name + " => " + this.btns[i].sub_category[j];
+            this.article.category_id = this.btns[i].id;
             break;
           }
           this.btns[i].color = "";
