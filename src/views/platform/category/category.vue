@@ -101,9 +101,9 @@
                   </v-col>
                 </v-row>
                 <v-list v-for="v in editedItem.children">
-                  <v-list-item-title>
+                  <v-list-item-title v-if="v.name">
                     {{ v.name }}
-                    <v-icon class="ms-6" @click="delChildren()">mdi-minus</v-icon>
+                    <v-icon style="position: absolute;left: 150px" class="ms-6" @click="delChildren(v)">mdi-minus</v-icon>
                   </v-list-item-title>
                 </v-list>
               </v-container>
@@ -117,11 +117,11 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <!-- 
-        <v-dialog v-model="dialogsubadd" max-width="500px">
+        
+        <v-dialog v-model="dialogchildrenedited" max-width="500px">
           <v-card>
             <v-card-title>
-              <span class="headline">test</span>
+              <span class="headline">修改子类名称</span>
             </v-card-title>
             <v-card-text>
               <v-container>
@@ -138,7 +138,7 @@
               <v-btn color="blue darken-1" text @click="saveSub()">Save</v-btn>
             </v-card-actions>
           </v-card>
-        </v-dialog>-->
+        </v-dialog>
 
         <!-- <v-dialog overlay-opacity="0.2" v-model="dialogdelete" max-width="290">
           <template v-slot:activator="{ on, attrs }">
@@ -192,7 +192,7 @@ export default {
     return {
       errormsg: "",
       errormsgchildren: "",
-      rules: [(value) => (value || "").length <= 10 || "Max 10 characters"],
+      rules: [(value) => (value || "").length <= 10 || "Max 20 characters"],
       tableHeadersSub: [
         {
           text: "子类名称",
@@ -216,20 +216,13 @@ export default {
         protein: 0,
         tempchildren: "",
         children: [
-          {
-            name: "",
-          },
         ],
       },
-      // addItem: {
-      //   name: "",
-      //   children: "",
-      // },
       editedItemSub: [],
       input: [],
       dialogdelete: false,
       dialogadd: false,
-      dialogsubadd: false,
+      dialogchildrenedited: false,
       dialogedit: false,
       tableHeaders: [
         {
@@ -288,14 +281,14 @@ export default {
     //   categoryList: "list",
     // });
     // 请求api
-    this.categoryList()
-      .then((list) => {
-        console.log("list", list);
-        this.desserts = list;
-      })
-      .catch((err) => {
-        console.log("get article list err:", err.response.data.message);
-      });
+    // this.categoryList()
+    //   .then((list) => {
+    //     console.log("list", list);
+    //     this.desserts = list;
+    //   })
+    //   .catch((err) => {
+    //     console.log("get article list err:", err.response.data.message);
+    //   });
   },
   methods: {
     ...mapActions("categoryModule", {
@@ -303,8 +296,10 @@ export default {
       categoryList: "list",
     }),
     editItem(item) {
+      // console.log("item", item)
       this.editedIndex = this.desserts.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      this.editedItem = this.editedItem;
       this.dialogedit = true;
     },
     deleteItem(item) {
@@ -325,7 +320,6 @@ export default {
     editSubItem(item, subitem) {
       console.log("item", item);
       console.log("subitem", subitem);
-      return;
       this.editedIndex = this.desserts.indexOf(item);
       this.editedIndexSub =
         this.desserts[this.editedIndex].children.indexOf(subitem);
@@ -333,7 +327,9 @@ export default {
         this.desserts[this.editedIndex].children[this.editedIndexSub].name;
       this.editedItem = Object.assign({}, item);
       console.log(this.editedItem);
-      this.dialogsubadd = true;
+      this.editedItem.tempchildren = subitem.name
+      console.log("this.editedItem.tempchildren",this.editedItem.tempchildren)
+      this.dialogchildrenedited = true;
     },
 
     deleteSubItem(item, subitem) {
@@ -352,9 +348,6 @@ export default {
     },
 
     save() {
-      console.log("desserts", this.desserts);
-      console.log("editedItem", this.editedItem);
-      return;
       if (this.editedItem.name.length === 0) {
         this.errormsg = "不能为空";
         return;
@@ -362,28 +355,19 @@ export default {
       if (this.editedItem.name.length > 10) {
         return;
       }
-      const item = {
-        name: this.editedItem.name,
-        artNums: 0,
-        sonNums: 0,
-        children: [],
-      };
-      this.editedItem.tempchildren.forEach((v) => {
-        item.children.push({
-          name: v,
-        });
-      });
+      console.log("this.editedItem", this.editedItem)
       if (this.editedIndex > -1) {
+        console.log(1)
         Object.assign(this.desserts[this.editedIndex], this.editedItem);
       } else {
-        // this.desserts.push(this.editedItem);
-        this.desserts.push(item);
+        console.log(2)
+        this.desserts.push(this.editedItem);
       }
       this.close();
     },
 
     closeSub() {
-      this.dialogsubadd = false;
+      this.dialogchildrenedited = false;
     },
 
     saveSub() {
@@ -406,7 +390,7 @@ export default {
       if (this.editedItem.tempchildren.length === 0) {
         return;
       }
-      if (this.editedItem.tempchildren.length > 10) {
+      if (this.editedItem.tempchildren.length > 20) {
         return;
       }
       for (let i = 0, len = this.editedItem.children.length; i < len; i++) {
@@ -415,16 +399,15 @@ export default {
           return;
         }
       }
-      this.editedItem.children.push({
+      this.editedItem.children = this.editedItem.children.concat({
         name: this.editedItem.tempchildren,
       });
-      console.log("   this.editedItem", this.editedItem);
-      console.log("   this.desserts.children", this.desserts);
       this.errormsgchildren = "";
       this.editedItem.tempchildren = "";
     },
-    delChildren() {
-      this.editedItem.tempchildren.splice(this.editedItem.tempchildren, 1);
+    delChildren(v) {
+      this.editedItem.children = this.editedItem.children.concat();
+      this.editedItem.children.splice(this.editedItem.children.indexOf(v), 1);
     },
     // blur() {
     //   this.errormsgchildren = "";
