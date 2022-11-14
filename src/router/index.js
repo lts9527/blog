@@ -46,7 +46,12 @@ const routes = [
                 component: () => import('@/views/platform/upload/manager/text.vue'),
               }
             ]
-          }
+          },
+          {
+            path: 'category',
+            name: 'category',
+            component: () => import('@/views/platform/category/category.vue'),
+          },
         ]
       },
     ]

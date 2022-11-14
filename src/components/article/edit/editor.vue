@@ -9,95 +9,90 @@
       <v-tab class="tabs-tab">编辑文章</v-tab>
       <v-tab>草稿箱</v-tab>
     </v-tabs>
-    <v-card style="top: 15px;">
-      <v-virtual-scroll :bench="1" :items="items" height="600px" item-height="600">
-        <input
-          class="input"
-          placeholder="请输入文章标题(建议30个字以内)"
-          style="margin-left:100px;max-width: 730px;color:# CDD0D4"
-          v-model="article.title"
-        />
-        <v-card outlined style="width: 90%;height: auto;margin-left: 5%;margin-bottom: 20px;">
-          <v-md-editor
-            style="width: 90%;margin-left: 5%;"
-            v-model="article.content"
-            height="450px"
-          />
-        </v-card>
-        <v-expansion-panels accordion flat>
-          <v-expansion-panel>
-            <v-expansion-panel-header style="width:140px;left: 30px;">更多设置</v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-card height="400px">
-                <v-card-title style="margin-left: 13px;">选择文章分类</v-card-title>
-                <v-row justify="space-around">
-                  <v-menu
-                    v-for="obj in btns"
-                    :key="obj.name"
-                    offset-y
-                    transition="fade-transition"
-                    open-on-hover
-                    top
-                  >
-                    <template v-slot:activator="{ attrs, on }">
+    <v-card class="mt-4">
+      <input
+        class="input"
+        placeholder="请输入文章标题(建议30个字以内)"
+        style="margin-left:52px;max-width: 730px;color:# CDD0D4"
+        v-model="article.title"
+      />
+      <v-card outlined class="mb-5 mx-13" width="90%">
+        <v-md-editor v-model="article.content" height="450px" />
+      </v-card>
+      <v-expansion-panels accordion flat>
+        <v-expansion-panel>
+          <v-expansion-panel-header style="width:140px;left: 30px;">更多设置</v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-card style="margin-top: -20px;">
+              <v-card-title style="margin-left: 13px;">选择文章分类</v-card-title>
+              <v-tabs class="mx-6" centered>
+                <v-container v-for="item in items" :key="item.title" class="pa-2" outlined tile>
+                  <v-menu transition="fade-transition" open-on-hover top offset-y>
+                    <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                        :color="obj.color"
-                        rounded
-                        class="ma-5"
+                        :color="item.color"
+                        elevation="0"
                         v-bind="attrs"
                         v-on="on"
-                      >{{ obj.name }}</v-btn>
+                      >{{item.title}}</v-btn>
                     </template>
-                    <template v-for="subtitle,i in getArray(obj)">
-                      <v-list v-if="subtitle" :key="subtitle" style="padding: 0;">
-                        <v-list-item dense @click="setCategory(subtitle)" :key="i">
-                          <v-list-item-content>
-                            <v-list-item-title v-text="subtitle"></v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </v-list>
-                    </template>
+                    <v-list>
+                      <v-list-item
+                        @click="setCategory(item.title, subtitle)"
+                        dense
+                        :key="i"
+                        v-for="subtitle,i in item.subtitle"
+                      >
+                        <v-list-item-content>
+                          <v-list-item-title v-text="subtitle"></v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list>
                   </v-menu>
-                  <v-card-text style="margin-left: 3%;">当前选择的分类: {{ CurrentCategory }}</v-card-text>
-                </v-row>
-                <v-card-title style="margin-left: 13px;">添加标签</v-card-title>
-                <v-card-text class="tag-ps" :v-model="tagslen">(还可以添加{{ tagslen }}个标签)</v-card-text>
-                <v-col class="tag-ipnut" align-self="center" cols="12" sm="6" md="6">
-                  <v-text-field
-                    style="left: 100%;max-width: 230px;"
-                    label="tag"
-                    v-model="inputValue"
-                    v-on:blur="blur"
-                    @keyup.enter="pushtoArray(inputValue)"
-                    :rules="rules"
-                    :error-messages="errormsg"
-                    filled
-                    rounded
-                  ></v-text-field>
+                </v-container>
+              </v-tabs>
+              <v-card-text class="ml-4">当前选择的分类: {{ CurrentCategory }}</v-card-text>
+              <v-card-title class="ml-4" style="margin-top: -30px;">
+                添加标签
+                <v-card-subtitle :v-model="tagslen">(还可以添加{{ tagslen }}个标签)</v-card-subtitle>
+                <v-text-field
+                  class="mt-6 field"
+                  label="tag"
+                  v-model="inputValue"
+                  v-on:blur="blur"
+                  @keyup.enter="pushtoArray(inputValue)"
+                  :rules="rules"
+                  :error-messages="errormsg"
+                  filled
+                  rounded
+                  clearable
+                  dense
+                ></v-text-field>
+              </v-card-title>
+              <v-row justify="space-around" style="margin-bottom: 50px;margin-top: -40px;">
+                <v-col cols="12" sm="10" md="6">
+                  <v-sheet>
+                    <v-chip-group class="tag-location" multiple>
+                      <v-chip
+                        close
+                        :color="getcolor()"
+                        v-on:click:close="tagdelete(tag)"
+                        v-for="tag in tags"
+                        :key="tag"
+                      >{{ tag }}</v-chip>
+                    </v-chip-group>
+                  </v-sheet>
                 </v-col>
-                <v-row justify="space-around">
-                  <v-col cols="12" sm="10" md="12">
-                    <v-sheet elevation="0" class="py-4 px-1">
-                      <v-chip-group class="tag-location" multiple>
-                        <v-chip
-                          close
-                          :color="getcolor()"
-                          v-on:click:close="tagdelete(tag)"
-                          v-for="tag in tags"
-                          :key="tag"
-                        >{{ tag }}</v-chip>
-                      </v-chip-group>
-                    </v-sheet>
-                  </v-col>
-                </v-row>
-              </v-card>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-        <v-btn v-on:click="create" color="primary" style="top: 30px; left:55px">发布文章</v-btn>
-        <v-btn style="top: 30px; margin-left:80px">存草稿</v-btn>
-      </v-virtual-scroll>
+              </v-row>
+            </v-card>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
     </v-card>
+    <v-container>
+      <v-btn class="ml-10" v-on:click="create" color="primary">发布文章</v-btn>
+      <v-btn class="ml-6">存草稿</v-btn>
+    </v-container>
   </div>
 </template>
 
@@ -150,6 +145,43 @@ Vue.use(VueMarkdownEditor);
         //   sub_catgory: ["mysql", "redis", "etcd", "mq"],
         // },
       ],
+      items: [
+        {
+          title: "分类1",
+          color: "",
+          subtitle: ["分类1-1", "分类1-2"],
+        },
+        {
+          title: "分类2",
+          color: "",
+          subtitle: ["分类2-1", "分类2-2"],
+        },
+        {
+          title: "分类3",
+          color: "",
+          subtitle: ["分类3-1", "分类3-2", "分类3-3", "分类3-4"],
+        },
+        {
+          title: "分类4",
+          color: "",
+          subtitle: ["分类4-1", "分类4-2", "分类4-3"],
+        },
+        {
+          title: "分类5",
+          color: "",
+          subtitle: ["分类5-1", "分类5-2", "分类5-3", "分类5-4"],
+        },
+        {
+          title: "分类6",
+          color: "",
+          subtitle: ["分类6-1", "分类6-2", "分类6-3", "分类6-4"],
+        },
+        {
+          title: "分类7",
+          color: "",
+          subtitle: ["分类6-1", "分类6-2", "分类6-3", "分类6-4"],
+        },
+      ],
       CurrentCategory: "",
       tags: ["test"],
       inputValue: "",
@@ -170,19 +202,19 @@ Vue.use(VueMarkdownEditor);
     };
   },
   computed: {
-    items() {
-      return Array.from({ length: this.length }, (k, v) => v + 1);
-    },
+    // items() {
+    //   return Array.from({ length: this.length }, (k, v) => v + 1);
+    // },
     length() {
       return 1;
     },
   },
   watch: {},
-  // 创建节点之前
+  // 加载页面完毕时获取分类列表
   created() {
-    mapActions("articleModule", {
-      articleList: "list",
-    });
+    // mapActions("articleModule", {
+    //   articleList: "list",
+    // });
     // 请求api
     this.articleList(9527)
       .then((list) => {
@@ -229,6 +261,25 @@ Vue.use(VueMarkdownEditor);
           });
         });
     },
+    setCategory(title, subtitle) {
+      this.templist = [];
+      for (let i in this.article) {
+        if (subtitle === this.article[i].category) {
+          let temparr = this.article[i].list;
+          this.templist = temparr;
+        }
+      }
+      for (let i in this.items) {
+        this.items[i].color = "";
+      }
+      for (let i in this.items) {
+        if (title === this.items[i].title) {
+          this.items[i].color = "success";
+          this.CurrentCategory = title + "  =>  " + subtitle;
+          break;
+        }
+      }
+    },
     getArray(obj) {
       for (var i in this.btns) {
         if (obj.name === this.btns[i].name) {
@@ -238,20 +289,6 @@ Vue.use(VueMarkdownEditor);
         }
       }
       return undefined;
-    },
-    setCategory(name) {
-      for (var i in this.btns) {
-        for (var j in this.btns[i].sub_category) {
-          if (name === this.btns[i].sub_category[j]) {
-            this.Identification = !this.Identification;
-            this.btns[i].color = "primary";
-            this.btns[i].name + " => " + this.btns[i].sub_category[j];
-            this.article.category_id = this.btns[i].id;
-            break;
-          }
-          this.btns[i].color = "";
-        }
-      }
     },
     pushtoArray(mydata) {
       if (mydata.length === 0) {
@@ -263,6 +300,7 @@ Vue.use(VueMarkdownEditor);
         return;
       }
       if (mydata.length > 10) {
+        this.errormsg = "名称最长为十位数";
         return;
       }
       var oktopush = true;
@@ -331,10 +369,10 @@ Vue.use(VueMarkdownEditor);
 }
 
 .tag-location {
-  left: 5%;
+  left: 30px;
   /* top: 70%; */
   /* position: fixed; */
-  bottom: 20%;
+  /* bottom: 20%; */
   /* margin-bottom: 10px; */
   position: absolute;
 }
@@ -345,11 +383,15 @@ Vue.use(VueMarkdownEditor);
   position: absolute;
 }
 
+.field {
+  max-width: 300px;
+}
+
 .tag-ps {
-  max-width: 200px;
-  left: 11%;
-  top: 47.5%;
-  position: absolute;
+  /* max-width: 200px; */
+  /* left: 11%; */
+  /* top: 47.5%; */
+  /* position: absolute; */
 }
 
 .article-row {

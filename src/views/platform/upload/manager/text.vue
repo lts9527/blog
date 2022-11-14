@@ -1,7 +1,21 @@
 <template>
   <div style="padding: 20px;">
+    <div id="details">
+      <v-row no-gutters>
+        <v-col v-for="v, k in info" :key="k" cols="12" sm="3">
+          <v-card id="border" flat height="164" tile>
+            <v-card-title class="border-title">
+              <v-icon>{{v.icon}}</v-icon>
+              {{v.name}}
+            </v-card-title>
+            <v-card-text>{{v.num}}</v-card-text>
+            <v-card-subtitle style="position: relative;bottom: 12px;">昨日 {{v.num}}</v-card-subtitle>
+          </v-card>
+        </v-col>
+      </v-row>
+    </div>
     <v-card flat v-for="item in templist" :key="item.name">
-      <div class="card box-shadow">
+      <div class="card">
         <v-list-item>
           <v-list-item-avatar height="88" width="117" tile color="grey"></v-list-item-avatar>
           <v-list-item-content>
@@ -20,12 +34,6 @@
             </v-row>
           </v-list-item-content>
         </v-list-item>
-        <!-- <div style="margin-top: -40px;height:50px;">
-          <v-list-item-avatar>
-            <v-img src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
-          </v-list-item-avatar>
-          <v-list-item-action-text style="color: rgba(0, 0, 0, 0.6);" class="mb-12 ms-5">分类</v-list-item-action-text>
-        </div>-->
         <v-menu transition="fade-transition" offset-y>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -75,6 +83,28 @@ export default {
   data() {
     return {
       dialog: false,
+      info: [
+        {
+          name: "阅读量",
+          num: 0,
+          icon: "mdi-eye",
+        },
+        {
+          name: "评论",
+          num: 0,
+          icon: "mdi-message-processing",
+        },
+        {
+          name: "点赞",
+          num: 0,
+          icon: "mdi-thumb-up",
+        },
+        {
+          name: "收藏",
+          num: 0,
+          icon: "mdi-cards-heart",
+        },
+      ],
       details: [
         {
           name: "浏览",
@@ -147,6 +177,24 @@ export default {
   text-align: center;
   position: relative;
   top: 20px;
+}
+
+.border-title {
+  display: flex;
+  flex-direction: column;
+  /* margin-top: 10px; */
+}
+
+#border {
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid #e5e9ef;
+}
+
+#details {
+  /* border: 1px solid #e5e9ef; */
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px 0 rgba(36, 46, 66, 0.07);
 }
 
 .card {
