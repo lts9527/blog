@@ -33,11 +33,15 @@ import '@kangc/v-md-editor/lib/theme/style/github.css';
 // highlightjs
 import hljs from 'highlight.js';
 
-VMdPreview.use(githubTheme, {
+// 自定义通知组件
+// import Notification from "@/components/notification/index.js";
+// Vue.use(Notification);
+
+VMdEditor.use(githubTheme, {
   Hljs: hljs,
 });
 
-VMdEditor.use(githubTheme, {
+VMdPreview.use(githubTheme, {
   Hljs: hljs,
 });
 

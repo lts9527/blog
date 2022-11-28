@@ -168,7 +168,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #article-title:hover {
   color: #2778ce;
 }

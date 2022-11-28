@@ -12,66 +12,16 @@
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>My CRUD</v-toolbar-title>
+        <v-toolbar-title @click="testmessage">分类管理</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
-        <!-- <v-dialog v-model="dialogadd" max-width="500px">
+        <v-dialog v-model="dialogeditem" max-width="500px" v-on:click:outside="close">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" class="mr-8" dark v-bind="attrs" v-on="on">添加分类</v-btn>
           </template>
           <v-card>
             <v-card-title>
-              <span class="headline">添加分类</span>
-            </v-card-title>
-            <v-divider></v-divider>
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col md="7">
-                    <v-text-field
-                      :rules="rules"
-                      :error-messages="errormsg"
-                      v-model="addItem.name"
-                      label="分类名称"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col md="7">
-                    <v-text-field
-                      :rules="rules"
-                      :error-messages="errormsgchildren"
-                      v-model="addItem.children"
-                      label="子类名"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col class="mt-6">
-                    <v-icon @click="addChildren(addItem.children)">mdi-plus</v-icon>
-                  </v-col>
-                  <v-col md="7">
-                    <span>子类列表</span>
-                  </v-col>
-                </v-row>
-                <v-list v-for="v in tempchildren">
-                  <v-list-item-title>
-                    {{ v }}
-                    <v-icon class="ms-6" @click="delChildren(addItem.children)">mdi-minus</v-icon>
-                  </v-list-item-title>
-                </v-list>
-              </v-container>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-spacer>
-                <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-              </v-spacer>
-              <v-btn color="blue darken-1" text @click="save">Save</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>-->
-
-        <v-dialog v-model="dialogedit" max-width="500px">
-          <v-card>
-            <v-card-title>
-              <span class="headline">修改分类</span>
+              <span class="headline">{{ formTitle }}</span>
             </v-card-title>
             <v-divider></v-divider>
             <v-card-text>
@@ -94,16 +44,20 @@
                     ></v-text-field>
                   </v-col>
                   <v-col class="mt-6">
-                    <v-icon @click="addChildren()">mdi-plus</v-icon>
+                    <v-icon @click="addChildren(editedItem.children)">mdi-plus</v-icon>
                   </v-col>
                   <v-col md="7">
                     <span>子类列表</span>
                   </v-col>
                 </v-row>
                 <v-list v-for="v in editedItem.children">
-                  <v-list-item-title v-if="v.name">
+                  <v-list-item-title>
                     {{ v.name }}
-                    <v-icon style="position: absolute;left: 150px" class="ms-6" @click="delChildren(v)">mdi-minus</v-icon>
+                    <v-icon
+                      class="ms-16"
+                      style="position: absolute;left: 150px"
+                      @click="delChildren(v)"
+                    >mdi-minus</v-icon>
                   </v-list-item-title>
                 </v-list>
               </v-container>
@@ -113,12 +67,12 @@
               <v-spacer>
                 <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
               </v-spacer>
-              <v-btn color="blue darken-1" text @click="save">Save</v-btn>
+              <v-btn color="blue darken-1" :loading="loading" text @click="save">Save</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
-        
-        <v-dialog v-model="dialogchildrenedited" max-width="500px">
+
+        <v-dialog v-model="dialogchildrenedited" max-width="500px" v-on:click:outside="close">
           <v-card>
             <v-card-title>
               <span class="headline">修改子类名称</span>
@@ -135,12 +89,12 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeSub">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="saveSub()">Save</v-btn>
+              <v-btn color="blue darken-1" text @click="saveSub">Save</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
 
-        <!-- <v-dialog overlay-opacity="0.2" v-model="dialogdelete" max-width="290">
+        <v-dialog overlay-opacity="0.2" v-model="dialogdelete" max-width="290">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="error" v-bind="attrs" v-on="on" :disabled="disabled">删除分类</v-btn>
           </template>
@@ -157,11 +111,11 @@
               <v-btn text @click="dialogdelete = false">取消</v-btn>
             </v-card-actions>
           </v-card>
-        </v-dialog>-->
+        </v-dialog>
       </v-toolbar>
     </template>
     <template v-slot:expanded-item="{ headers, item }">
-      <td style="padding: 0;font-size: 0.375rem" :colspan="headers.length">
+      <td style="padding: 0;" :colspan="headers.length">
         <v-data-table
           :headers="tableHeadersSub"
           :items="item.children"
@@ -192,7 +146,15 @@ export default {
     return {
       errormsg: "",
       errormsgchildren: "",
-      rules: [(value) => (value || "").length <= 10 || "Max 20 characters"],
+      disabled: true,
+      editedIndex: -1,
+      editedIndexSub: -1,
+      input: [],
+      dialogeditem: false,
+      dialogdelete: false,
+      dialogchildrenedited: false,
+      loading: false,
+      rules: [(value) => (value || "").length <= 20 || "Max 20 characters"],
       tableHeadersSub: [
         {
           text: "子类名称",
@@ -205,25 +167,20 @@ export default {
         { sortable: false },
         { text: "", sortable: false, align: "end", value: "actions" },
       ],
-      disabled: true,
-      editedIndex: -1,
-      editedIndexSub: -1,
       editedItem: {
         name: "",
         artNums: 0,
         sonNums: 0,
-        carbs: 0,
-        protein: 0,
         tempchildren: "",
-        children: [
-        ],
+        children: [],
       },
-      editedItemSub: [],
-      input: [],
-      dialogdelete: false,
-      dialogadd: false,
-      dialogchildrenedited: false,
-      dialogedit: false,
+      defaultItem: {
+        name: "",
+        artNums: 0,
+        sonNums: 0,
+        tempchildren: "",
+        children: [],
+      },
       tableHeaders: [
         {
           text: "分类名称",
@@ -277,36 +234,93 @@ export default {
     },
   },
   created() {
-    // mapActions("categoryModule", {
-    //   categoryList: "list",
-    // });
+    mapActions("categoryModule", {
+      categoryList: "list",
+    });
     // 请求api
-    // this.categoryList()
-    //   .then((list) => {
-    //     console.log("list", list);
-    //     this.desserts = list;
-    //   })
-    //   .catch((err) => {
-    //     console.log("get article list err:", err.response.data.message);
-    //   });
+    this.categoryList()
+      .then((list) => {
+        this.desserts = list;
+      })
+      .catch((err) => {
+        console.log("get article list err:", err.response.data.message);
+      });
   },
   methods: {
     ...mapActions("categoryModule", {
-      // categoryCreate: "create",
+      categoryCreate: "create",
       categoryList: "list",
+      categoryDelete: "del",
     }),
-    editItem(item) {
-      // console.log("item", item)
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.editedItem = this.editedItem;
-      this.dialogedit = true;
+
+    async testmessage() {
+      // this.$notify({
+      //   content: "Hello World", // 消息内容
+      //   btn: "关闭", // 关闭按钮内容
+      // });
     },
+
+    create(list) {
+      this.categoryCreate(list)
+        .then((res) => {
+          if (res.code === 1) {
+            this.close();
+            this.desserts.push(this.editedItem);
+            this.$dialog.message.success(res.message, {
+              position: "top-right",
+              timeout: 2000,
+            });
+          }
+        })
+        .catch((err) => {
+          this.close();
+          this.$dialog.message.error(err.response.data.message, {
+            position: "top-right",
+            timeout: 2000,
+          });
+        });
+    },
+
+    delete(ID, type, index, indexSub) {
+      const id = [];
+      id.push(ID);
+      this.categoryDelete({ id, type })
+        .then((res) => {
+          if (res.code === 1) {
+            if (type === 1) {
+              this.desserts.splice(index, 1);
+            } else {
+              this.desserts[index].children.splice(indexSub, 1);
+            }
+            this.$dialog.message.success(res.message, {
+              position: "top-right",
+              timeout: 2000,
+            });
+          }
+        })
+        .catch((err) => {
+          this.$dialog.message.error(err.response.data.message, {
+            position: "top-right",
+            timeout: 2000,
+          });
+        });
+    },
+
+    editItem(item) {
+      // this.editedItem = Object.assign({}, this.defaultItem);
+      this.editedIndex = this.desserts.indexOf(item);
+      this.editedItem = JSON.parse(
+        JSON.stringify(this.desserts[this.editedIndex])
+      );
+      this.dialogeditem = true;
+    },
+
     deleteItem(item) {
-      console.log("item", item);
       const index = this.desserts.indexOf(item);
+      // confirm("Are you sure you want to delete this item?") &&
+      //   this.desserts.splice(index, 1);
       confirm("Are you sure you want to delete this item?") &&
-        this.desserts.splice(index, 1);
+        this.delete(item.id, 1, index);
     },
 
     deletBatchItem(item) {
@@ -318,52 +332,74 @@ export default {
     },
 
     editSubItem(item, subitem) {
-      console.log("item", item);
-      console.log("subitem", subitem);
       this.editedIndex = this.desserts.indexOf(item);
       this.editedIndexSub =
         this.desserts[this.editedIndex].children.indexOf(subitem);
-      this.editedItem.tempchildren =
-        this.desserts[this.editedIndex].children[this.editedIndexSub].name;
+      // this.editedItem.tempchildren =
+      //   this.desserts[this.editedIndex].children[this.editedIndexSub].name;
       this.editedItem = Object.assign({}, item);
-      console.log(this.editedItem);
-      this.editedItem.tempchildren = subitem.name
-      console.log("this.editedItem.tempchildren",this.editedItem.tempchildren)
+      this.editedItem.tempchildren = subitem.name;
       this.dialogchildrenedited = true;
     },
 
     deleteSubItem(item, subitem) {
       const index = this.desserts.indexOf(item);
       const indexSub = this.desserts[index].children.indexOf(subitem);
+      const id = this.desserts[index].children[indexSub].id;
+      // confirm("Are you sure you want to delete this item?") &&
+      //   this.desserts[index].children.splice(indexSub, 1);
       confirm("Are you sure you want to delete this item?") &&
-        this.desserts[index].children.splice(indexSub, 1);
+        this.delete(id, 2, index, indexSub);
     },
 
     close() {
-      this.dialogedit = false;
+      this.dialogeditem = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
+        this.loading = false;
       });
     },
 
+    // async remove() {
+    //   this.loading = true;
+    //   await new Promise((resolve) => setTimeout(resolve, 3000));
+    //   this.loading = false;
+    // },
+
     save() {
+      // this.loading = true;
       if (this.editedItem.name.length === 0) {
         this.errormsg = "不能为空";
         return;
       }
-      if (this.editedItem.name.length > 10) {
+      if (this.editedItem.name.length > 20) {
         return;
       }
-      console.log("this.editedItem", this.editedItem)
       if (this.editedIndex > -1) {
-        console.log(1)
         Object.assign(this.desserts[this.editedIndex], this.editedItem);
       } else {
-        console.log(2)
-        this.desserts.push(this.editedItem);
+        const list = {
+          list: [
+            {
+              name: this.editedItem.name,
+              children: [],
+            },
+          ],
+        };
+        this.editedItem.children.forEach(function (item, index, self) {
+          list.list[0].children.push(item.name);
+        });
+        console.log(JSON.stringify(list));
+        this.create(list);
+        // this.desserts.push(this.editedItem);
       }
+      // if (!this.loading) {
+      //   this.close();
+      // }
       this.close();
+
+      // await new Promise((resolve) => setTimeout(resolve, 3000));
     },
 
     closeSub() {
@@ -371,48 +407,53 @@ export default {
     },
 
     saveSub() {
-      // if (this.editedIndexSub > -1) {
-      //   this.editedItem.children[this.editedIndexSub].name =
-      //     this.editedItem.tempchildren;
-      //   Object.assign(this.desserts[this.editedIndex], this.editedItem);
-      // } else {
-      //   this.desserts.push(this.editedItem);
-      // }
-      // this.closeSub();
+      if (this.editedIndexSub > -1) {
+        this.editedItem.children[this.editedIndexSub].name =
+          this.editedItem.tempchildren;
+        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+      } else {
+        this.desserts.push(this.editedItem);
+      }
+      this.closeSub();
     },
-    inputsub() {
-      return this.inputsubs;
-    },
-    alt() {
-      alert(1);
-    },
-    addChildren() {
+
+    addChildren(subitem) {
       if (this.editedItem.tempchildren.length === 0) {
+        console.log(1);
         return;
       }
       if (this.editedItem.tempchildren.length > 20) {
+        console.log(2);
         return;
       }
-      for (let i = 0, len = this.editedItem.children.length; i < len; i++) {
-        if (this.editedItem.tempchildren === this.editedItem.children[i].name) {
-          this.errormsgchildren = "名称已存在";
-          return;
+      if (this.editedItem.children != undefined) {
+        for (let i = 0, len = this.editedItem.children.length; i < len; i++) {
+          if (
+            this.editedItem.tempchildren === this.editedItem.children[i].name
+          ) {
+            this.errormsgchildren = "名称已存在";
+            return;
+          }
         }
+        this.editedItem.children = this.editedItem.children.concat({
+          name: this.editedItem.tempchildren,
+        });
+        // this.editedItem.children.push({
+        //   name: this.editedItem.tempchildren,
+        // });
+      } else {
+        this.editedItem.children = [];
+        this.editedItem.children.push({
+          name: this.editedItem.tempchildren,
+        });
       }
-      this.editedItem.children = this.editedItem.children.concat({
-        name: this.editedItem.tempchildren,
-      });
       this.errormsgchildren = "";
       this.editedItem.tempchildren = "";
     },
+
     delChildren(v) {
-      this.editedItem.children = this.editedItem.children.concat();
       this.editedItem.children.splice(this.editedItem.children.indexOf(v), 1);
     },
-    // blur() {
-    //   this.errormsgchildren = "";
-    //   this.addItem.name = "";
-    // },
   },
 };
 </script>

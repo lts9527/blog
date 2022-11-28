@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire" class="v-application--wrap">
+  <v-app id="inspire">
     <v-app-bar id="head-bar" app color="white">
       <v-avatar style="margin-left: 70px;" class="mr-16" color="grey darken-1" size="32"></v-avatar>
       <v-btn v-for="link in links" :key="link" text>{{ link }}</v-btn>
@@ -45,74 +45,45 @@
           </v-list>
         </v-sheet>
       </v-col>
-      <div id="contentarea">
+      <v-container id="contentarea" class="py-8 px-6" fluid>
         <v-row>
-          <v-col>
-            <v-sheet
-              style="background-color: #f6f7f9;"
-              min-height="88vh"
-              min-width="1000"
-              rounded="lg"
-            >
+          <v-col cols="12">
+            <v-sheet style="background-color: red;" color="#f6f7f9" rounded="lg">
+              ss
               <router-view></router-view>
             </v-sheet>
           </v-col>
         </v-row>
-      </div>
+      </v-container>
     </v-main>
   </v-app>
 </template>
   
   <script>
 export default {
-  name: "centre",
-
   data: () => ({
-    links: ["Dashboard", "Messages", "Profile", "Updates"],
-    show: false,
-    items: [
-      {
-        icon: "$expand",
-        show: false,
-        name: "内容管理",
-        sub: {
-          文章管理: "manager-text",
-          视频管理: "",
-          分类管理: "articles",
-        },
-      },
-      {
-        name: "数据中心",
-      },
-      {
-        name: "设置",
-      },
+    cards: ["Today"],
+    drawer: null,
+    links: [
+      ["mdi-inbox-arrow-down", "Inbox"],
+      ["mdi-send", "Send"],
+      ["mdi-delete", "Trash"],
+      ["mdi-alert-octagon", "Spam"],
     ],
   }),
-  methods: {
-    test(icon) {
-      if (icon === "$expand") {
-        return "$expand";
-      }
-      return "";
-    },
-    to(path) {
-      this.$router.push({ name: path });
-    },
-  },
 };
 </script>
 
 <style>
-html {
-  background-color: #f6f7f9;
-}
-
 #contentarea {
+  top: 30px;
+  width: 85%;
   min-width: 680px;
-  margin-top: 30px;
   margin-left: 220px;
-  /* margin-right: 30px; */
+  /* margin-right: 200px; */
+  /* min-width: 980px;
+  max-width: 85%; */
+  /* position: absolute; */
 }
 
 #col {
@@ -121,20 +92,5 @@ html {
   height: 100%;
   padding: 0px;
   width: 200px;
-}
-
-#sheet {
-  box-shadow: 0 4px 8px 0 rgba(36, 46, 66, 0.09);
-}
-
-#head-bar {
-  box-shadow: 0 4px 8px 0 rgba(36, 46, 66, 0.06);
-}
-
-/* 
-消除滚动条
-*/
-.v-application--wrap {
-  min-height: 100%;
 }
 </style>
