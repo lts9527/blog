@@ -1,113 +1,108 @@
 <template>
-  <div style="max-height: 700px;">
-    <v-row>
-      <v-col cols="3" lg="3">
-        <div style="width: 240px;">
-          <v-card height="700" width="240" class="pa-4 pt-6 text-center rounded-lg" outlined>
-            <router-link :to="{name:'upload'}">
-              <v-btn height="44" width="208" depressed color="#3295C5" class="rounded-lg">
-                <v-list-item-title class="pr-4 white--text text-overline">添加分类</v-list-item-title>
-              </v-btn>
-            </router-link>
-            <v-btn height="44" width="208" depressed color="#3295C5" class="rounded-lg mt-4">
-              <v-list-item-title @click="tag =true" class="pr-4 white--text text-overline">添加标签</v-list-item-title>
+  <div>
+    <v-card class="d-flex flex-row" color="#EEF0F3" flat tile>
+      <div style="width: 240px; margin-right: 30px;">
+        <v-card height="700" width="240" class="pa-4 shadow-1" flat>
+          <router-link :to="{name:'upload'}">
+            <v-btn height="44" width="208" depressed color="#3295C5" class="rounded-lg">
+              <v-list-item-title class="pr-4 white--text text-overline">添加分类</v-list-item-title>
             </v-btn>
-            <v-list nav class="pa-0 pt-6 text-left">
-              <v-list-item-group v-model="selectedItem" color="primary">
-                <v-list-item
-                  :to="{name: item.route}"
-                  @click="jump(item.route)"
-                  class="height-48 width-208"
-                  v-for="(item, i) in items"
-                  :key="item.text"
-                >
-                  <v-list-item-icon>
-                    <v-icon dense v-text="item.icon"></v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title class="text-left font-weight-medium" v-text="item.text"></v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-subheader style="margin-left: -10px">标签</v-subheader>
+          </router-link>
+          <v-btn height="44" width="208" depressed color="#3295C5" class="rounded-lg mt-4">
+            <v-list-item-title @click="tag =true" class="pr-4 white--text text-overline">添加标签</v-list-item-title>
+          </v-btn>
+          <v-list nav class="pa-0 pt-6 text-left">
+            <v-list-item-group v-model="selectedItem" color="primary">
+              <v-list-item
+                :to="{name: item.route}"
+                @click="jump(item.route)"
+                class="height-48 width-208"
+                v-for="(item, i) in items"
+                :key="item.text"
+              >
+                <v-list-item-icon>
+                  <v-icon dense v-text="item.icon"></v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title class="text-left font-weight-medium" v-text="item.text"></v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-subheader style="margin-left: -10px">标签</v-subheader>
 
-                <v-list-item
-                  :to="{name: `tags-${i}`}"
-                  @click="separator(item.text, i)"
+              <v-list-item
+                @click="separator(item.text, i)"
+                dense
+                class="width-208 height-40"
+                v-for="(item, i) in tags"
+                :key="item.text"
+              >
+                <v-list-item-icon>
+                  <v-icon small v-text="item.icon"></v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title class="font-weight-medium text-caption" v-text="item.text"></v-list-item-title>
+                </v-list-item-content>
+                <v-list-item-action class="pa-0 px-0">
+                  <v-menu transition="fade-transition" offset-y>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn icon small @click="edit = true" v-bind="attrs" v-on="on">
+                        <v-icon small>mdi-dots-vertical</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list>
+                      <v-list-item dense @click="editTag(item, i)">
+                        <v-list-item-content>
+                          <v-list-item-title>编辑标签</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                      <v-list-item @click="delTag(i)" dense>
+                        <v-list-item-content>
+                          <v-list-item-title>删除标签</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </v-list-item-action>
+              </v-list-item>
+              <v-card v-show="tag" height="105px" width="100%" class="mb-5 mt-2 shadow-1">
+                <v-text-field
                   dense
-                  class="width-208 height-40"
-                  v-for="(item, i) in tags"
-                  :key="item.text"
-                >
-                  <v-list-item-icon>
-                    <v-icon small v-text="item.icon"></v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title class="font-weight-medium text-caption" v-text="item.text"></v-list-item-title>
-                  </v-list-item-content>
-                  <v-list-item-action class="pa-0 px-0">
-                    <v-menu transition="fade-transition" offset-y>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn icon small @click="edit = true" v-bind="attrs" v-on="on">
-                          <v-icon small>mdi-dots-vertical</v-icon>
-                        </v-btn>
-                      </template>
-                      <v-list>
-                        <v-list-item dense @click="editTag(item, i)">
-                          <v-list-item-content>
-                            <v-list-item-title>编辑标签</v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item @click="delTag(i)" dense>
-                          <v-list-item-content>
-                            <v-list-item-title>删除标签</v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </v-list-item-action>
-                </v-list-item>
-                <v-card v-show="tag" height="105px" width="100%" class="mb-5 mt-2 shadow-1">
-                  <v-text-field
-                    dense
-                    autofocus
-                    v-model="editedTag.text"
-                    height="28"
-                    hide-details="auto"
-                    placeholder="输入标签名称"
-                    class="mt-2 pt-4 text-caption px-5"
-                  ></v-text-field>
-                  <v-card-actions class="px-5 mt-2">
-                    <v-spacer>
-                      <v-btn
-                        width="70"
-                        color="#FFFFFF"
-                        class="black--text shadow"
-                        small
-                        depressed
-                        @click="close"
-                      >取消</v-btn>
-                    </v-spacer>
+                  autofocus
+                  v-model="editedTag.text"
+                  height="28"
+                  hide-details="auto"
+                  placeholder="输入标签名称"
+                  class="mt-2 pt-4 text-caption px-5"
+                ></v-text-field>
+                <v-card-actions class="px-5 mt-2">
+                  <v-spacer>
                     <v-btn
                       width="70"
-                      color="#3295C5"
-                      class="white--text"
+                      color="#FFFFFF"
+                      class="black--text shadow"
                       small
                       depressed
-                      @click="save"
-                    >确定</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-list-item-group>
-            </v-list>
-          </v-card>
-        </div>
-      </v-col>
-      <v-col cols="9" lg="9">
-        <v-card height="700" min-width="680" class="mr-8" outlined>
-          <router-view ref="child"></router-view>
+                      @click="close"
+                    >取消</v-btn>
+                  </v-spacer>
+                  <v-btn
+                    width="70"
+                    color="#3295C5"
+                    class="white--text"
+                    small
+                    depressed
+                    @click="save"
+                  >确定</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-list-item-group>
+          </v-list>
         </v-card>
-      </v-col>
-    </v-row>
+      </div>
+      <v-card class="mr-6 shadow-1" width="100%" flat>
+        <router-view ref="child"></router-view>
+      </v-card>
+    </v-card>
   </div>
 </template>
 
@@ -193,7 +188,7 @@ export default {
     },
 
     separator(tag, i) {
-      const templist = [];
+      let templist = [];
       for (let i = 0, len = this.templist.length; i < len; i++) {
         this.templist[i].tags.forEach((element) => {
           if (tag === element) {
@@ -201,8 +196,11 @@ export default {
           }
         });
       }
-      this.$refs.child.settemplist(templist);
-      // this.$router.push({ name: `tags-${i}`, params: { templist: templist } });
+      if (this.$refs.child.settemplist) {
+        this.$refs.child.settemplist(templist);
+      }
+      // this.$store.state.templist = templist;
+      this.$router.push({ name: `tags-${i}`, params: { templist: templist } });
     },
 
     delTag(i) {
@@ -250,6 +248,13 @@ export default {
 </script>
 
 <style>
+#wrap div {
+  max-height: 700px;
+  height: 700px;
+  /* margin: 10px; */
+  /* display: inline-block; */
+}
+
 .width-208 {
   width: 208px;
 }

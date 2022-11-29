@@ -1,10 +1,10 @@
 <template>
-  <div style="min-width: 680px;">
+  <div>
     <div>
       <v-text-field
+        class="shadow text-center"
         height="80"
         hide-details
-        class="shadow text-center"
         clearable
         solo
         flat
@@ -89,7 +89,6 @@ export default {
   methods: {
     settemplist(value) {
       // if (this.$router.currentRoute.name === "articles") {
-      //   console.log(1);
       //   this.templist = this.$store.state.detaultlist;
       // }
       this.templist = value;
@@ -111,32 +110,3 @@ export default {
     0 1px 10px 0 rgba(85, 85, 85, 0.06), 0 1px 30px 0 rgba(85, 85, 85, 0.03) !important; */
 }
 </style>
-
-<!-- <v-menu transition="fade-transition" offset-y>
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn
-        v-bind="attrs"
-        v-on="on"
-        style="bottom: 80px;"
-        text
-        depressed
-        icon
-        class="float-right"
-      >
-        <v-icon large>mdi-dots-horizontal-circle</v-icon>
-      </v-btn>
-    </template>
-
-    <v-list>
-      <v-list-item dense link>
-        <v-list-item-content>
-          <v-list-item-title>编辑文章</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item @click="dialog = true" dense link>
-        <v-list-item-content>
-          <v-list-item-title>删除文章</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
-  </v-menu> -->

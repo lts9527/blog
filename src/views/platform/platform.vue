@@ -8,8 +8,8 @@
         <v-text-field dense flat hide-details rounded solo-inverted></v-text-field>
       </v-responsive>
     </v-app-bar>
-    <v-main class="grey lighten-4" style="padding: 0px">
-      <v-col id="col">
+    <v-main style="padding: 0px;background-color: #eef0f3;">
+      <v-col id="col-1">
         <v-sheet id="sheet" min-height="100%">
           <v-list color="transparent">
             <v-list-item-content>
@@ -45,20 +45,11 @@
           </v-list>
         </v-sheet>
       </v-col>
-      <div id="contentarea">
-        <v-row>
-          <v-col>
-            <v-sheet
-              style="background-color: #f6f7f9;"
-              min-height="88vh"
-              min-width="1000"
-              rounded="lg"
-            >
-              <router-view></router-view>
-            </v-sheet>
-          </v-col>
-        </v-row>
-      </div>
+      <v-col>
+        <v-sheet rounded="lg" id="contentarea" class="align-stretch" lg="9">
+          <router-view></router-view>
+        </v-sheet>
+      </v-col>
     </v-main>
   </v-app>
 </template>
@@ -104,18 +95,18 @@ export default {
 </script>
 
 <style>
-html {
-  background-color: #f6f7f9;
+html,
+body {
+  background-color: #eef0f3;
 }
 
 #contentarea {
-  min-width: 680px;
-  margin-top: 30px;
+  margin-top: 20px;
   margin-left: 220px;
-  /* margin-right: 30px; */
+  background-color: #eef0f3;
 }
 
-#col {
+#col-1 {
   position: fixed;
   left: 0;
   height: 100%;
