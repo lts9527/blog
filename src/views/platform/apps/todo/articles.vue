@@ -20,23 +20,18 @@
       <v-list class="pa-0">
         <v-list-item-group>
           <v-card flat v-for="item in templist" :key="item.name">
-            <div class="card">
+            <div>
               <v-list-item>
                 <v-list-item-avatar height="80" width="110" tile color="grey"></v-list-item-avatar>
                 <v-list-item-content>
                   <v-list-item-title id="article-title" v-html="item.title" class="text-h5 pl-7"></v-list-item-title>
-                  <v-list-item-subtitle
-                    style="position: relative;left: 28px;top: 15px;"
-                  >2022-11-06 19:33:13</v-list-item-subtitle>
-                  <v-row
-                    no-gutters
-                    style="position: relative;left: 40px;top: 20px;margin-bottom: 10px;"
-                  >
-                    <v-col cols="12" sm="2" v-for="item, i in details" :key="i">
+                  <v-list-item-subtitle class="time-bar">2022-11-06 19:33:13</v-list-item-subtitle>
+                  <v-row no-gutters class="info-bar">
+                    <v-col v-for="item, i in details" :key="i">
                       <v-btn disabled icon>
                         <v-icon small>{{item.icon}}</v-icon>
                         {{item.name}}
-                        <v-list-item-action-text v-html="0"></v-list-item-action-text>
+                        <v-list-item-action-text class="ml-1" v-html="0"></v-list-item-action-text>
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -88,25 +83,28 @@ export default {
   computed: {},
   methods: {
     settemplist(value) {
-      // if (this.$router.currentRoute.name === "articles") {
-      //   this.templist = this.$store.state.detaultlist;
-      // }
       this.templist = value;
-      // console.log("this.templist", this.templist);
     },
   },
 };
 </script>
 
 <style scoped>
-.card {
-  /* padding: 10px; */
-  /* border: 1px solid #e5e9ef; */
+.time-bar {
+  position: relative;
+  left: 28px;
+  top: 15px;
+}
+
+.info-bar {
+  left: 40px;
+  top: 20px;
+  margin-bottom: 10px;
+  max-width: 300px;
+  position: relative;
 }
 
 .shadow {
   box-shadow: 0 4px 8px 0 rgba(36, 46, 66, 0.09);
-  /* box-shadow: 0 2px 10px -1px rgba(85, 85, 85, 0.08),
-    0 1px 10px 0 rgba(85, 85, 85, 0.06), 0 1px 30px 0 rgba(85, 85, 85, 0.03) !important; */
 }
 </style>
