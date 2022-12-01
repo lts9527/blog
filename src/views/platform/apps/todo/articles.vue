@@ -1,6 +1,19 @@
 <template>
   <div>
-    <div>
+    <List :list="list" v-on:opEdit="opEdit">
+      <template v-slot:create-time>2022-11-06 19:33:13</template>
+      <template v-slot:edit-time>2022-11-06 19:33:13</template>
+      <template v-slot:info-bar>
+        <v-col v-for="item, i in details" :key="i">
+          <v-btn disabled icon>
+            <v-icon small>{{item.icon}}</v-icon>
+            {{item.name}}
+            <v-list-item-action-text class="ml-1" v-html="0"></v-list-item-action-text>
+          </v-btn>
+        </v-col>
+      </template>
+    </List>
+    <!-- <div>
       <v-text-field
         class="shadow text-center"
         height="80"
@@ -18,42 +31,44 @@
     </div>
     <div style="padding-top: 1px;">
       <v-list class="pa-0">
-        <v-list-item-group>
-          <v-card flat v-for="item in templist" :key="item.name">
-            <div>
-              <v-list-item>
-                <v-list-item-avatar height="80" width="110" tile color="grey"></v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title id="article-title" v-html="item.title" class="text-h5 pl-7"></v-list-item-title>
-                  <v-list-item-subtitle class="time-bar">2022-11-06 19:33:13</v-list-item-subtitle>
-                  <v-row no-gutters class="info-bar">
-                    <v-col v-for="item, i in details" :key="i">
-                      <v-btn disabled icon>
-                        <v-icon small>{{item.icon}}</v-icon>
-                        {{item.name}}
-                        <v-list-item-action-text class="ml-1" v-html="0"></v-list-item-action-text>
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-list-item-content>
-                <v-list-item-action>
-                  <v-btn icon>
-                    <v-icon>mdi-delete-outline</v-icon>
-                  </v-btn>
-                </v-list-item-action>
-              </v-list-item>
-            </div>
-            <v-divider></v-divider>
-          </v-card>
-        </v-list-item-group>
+        <v-card flat v-for="item in templist" :key="item.name">
+          <div>
+            <v-list-item link>
+              <v-list-item-avatar height="80" width="110" tile color="grey"></v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title id="article-title" v-html="item.title" class="text-h5 pl-7"></v-list-item-title>
+                <v-list-item-subtitle class="time-bar">2022-11-06 19:33:13</v-list-item-subtitle>
+                <v-row no-gutters class="info-bar">
+                  <v-col v-for="item, i in details" :key="i">
+                    <v-btn disabled icon>
+                      <v-icon small>{{item.icon}}</v-icon>
+                      {{item.name}}
+                      <v-list-item-action-text class="ml-1" v-html="0"></v-list-item-action-text>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-btn icon>
+                  <v-icon>mdi-delete-outline</v-icon>
+                </v-btn>
+              </v-list-item-action>
+            </v-list-item>
+          </div>
+          <v-divider></v-divider>
+        </v-card>
       </v-list>
-    </div>
+    </div>-->
   </div>
 </template>
 
 <script>
+import List from "@/components/article/list/list.vue";
 export default {
   name: "articles",
+  components: {
+    List,
+  },
   data() {
     return {
       details: [
@@ -73,17 +88,15 @@ export default {
           num: 0,
         },
       ],
-      templist: [],
+      list: [],
     };
   },
   created() {
-    console.log(2);
-    this.templist = this.$store.state.detaultlist;
+    this.list = this.$store.state.detaultlist;
   },
-  computed: {},
   methods: {
     settemplist(value) {
-      this.templist = value;
+      this.list = value;
     },
   },
 };

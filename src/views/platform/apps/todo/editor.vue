@@ -1,5 +1,8 @@
 <template>
   <div>
+    <Edit></Edit>
+  </div>
+  <!-- <div>
     <v-card class="mt-04">
       <input
         class="input"
@@ -61,12 +64,16 @@
       <v-btn class="ml-7" color="primary">发布文章</v-btn>
       <v-btn class="ml-6" @click="getCover">存草稿</v-btn>
     </v-container>
-  </div>
+  </div>-->
 </template>
   
   <script>
 import { mapActions } from "vuex";
+import Edit from "@/components/article/edit/edit.vue";
 export default {
+  components: {
+    Edit,
+  },
   data() {
     return {
       items: [

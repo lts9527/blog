@@ -1,76 +1,122 @@
 <template>
-  <div class="test1">
-    <!-- <v-md-editor style="width: 90%;margin-left: 5%;" v-model="article.content" height="450px" /> -->
-    <v-md-editor v-model="article.content" mode="preview" default-show-toc height="auto"></v-md-editor>
+  <div>
+    <div>
+      <v-text-field
+        class="shadow text-center"
+        height="80"
+        hide-details
+        clearable
+        solo
+        flat
+        dense
+        placeholder="搜索"
+      >
+        <template v-slot:prepend-inner>
+          <v-icon>mdi-magnify</v-icon>
+        </template>
+      </v-text-field>
+    </div>
+    <div style="padding-top: 1px;">
+      <v-list class="pa-0">
+        <v-card flat v-for="item in list" :key="item.name">
+          <v-list-item style="height: 120px;" @click="opEdit">
+            <!-- 复选框 -->
+            <!-- <v-list-item-action>
+              <v-checkbox :input-value="active" color="primary" @click.stop></v-checkbox>
+            </v-list-item-action>-->
+            <v-list-item-avatar height="80" width="110" tile color="grey"></v-list-item-avatar>
+
+            <v-list-item-content>
+              <v-list-item-title id="article-title" v-html="item.title" class="text-h5 pl-7"></v-list-item-title>
+
+              <div style="position: absolute;">
+                <div class="create-time">
+                  <span class="mr-2">
+                    <slot name="create-name">创建于</slot>
+                  </span>
+                  <span>
+                    <slot name="create-time"></slot>
+                  </span>
+                </div>
+                <div class="edit-time">
+                  <span class="mr-2">修改于</span>
+                  <span>
+                    <slot name="edit-time"></slot>
+                  </span>
+                </div>
+              </div>
+
+              <v-row no-gutter class="info-bar">
+                <slot name="info-bar"></slot>
+              </v-row>
+            </v-list-item-content>
+
+            <v-list-item-action>
+              <v-btn icon @click.stop="deletesArticle">
+                <v-icon>mdi-delete-outline</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
+
+          <v-divider></v-divider>
+        </v-card>
+      </v-list>
+    </div>
   </div>
 </template>
+
 <script>
 export default {
+  name: "list",
+  props: ["list"],
   data() {
-    return {
-      article: {
-        content: "",
-      },
-    };
+    return {};
   },
+  created() {
+    // this.templist = this.$store.state.detaultlist;
+  },
+  computed: {},
   methods: {
-    set(content) {
-      this.text = content;
+    settemplist(value) {
+      this.templist = value;
+    },
+
+    opEdit() {
+      this.$emit("opEdit");
+    },
+
+    deletesArticle() {
+      alert("delete article");
     },
   },
 };
 </script>
-  
-<style>
-.test1 p {
+
+<style scoped>
+#article-title {
   position: absolute;
-  left: 50%;
-  margin-top: 0;
-  transform: translate(-50%, -50%);
+  top: 15px;
 }
-
-.test1 img {
-  width: auto;
-  height: auto;
-}
-
-.test1 h1 {
-  margin: 0 0;
+.create-time {
   position: relative;
-  white-space: nowrap;
-  border-bottom: 1px solid #eaecef;
-  line-height: 50px;
-  color: #2e3e4f;
+  left: 28px;
+  top: 10px;
 }
 
-.test1 {
-  top: 15%;
-  width: 900px;
-  position: absolute;
-  left: 50%;
-  margin-top: 50%;
-  transform: translate(-50%, -50%);
+.edit-time {
+  position: relative;
+  left: 200px;
+  top: -3px;
 }
 
-.test {
-  position: absolute;
-  left: 50%;
-  margin-top: 50%;
-  transform: translate(-50%, -50%);
+.info-bar {
+  margin-top: 50px;
+  left: 40px;
+  max-width: 300px;
+  position: relative;
 }
 
-[data-v-f36f14d2] .markdown-preview h1 {
-  top: 15px;
-}
-
-/* .test {
-  position: absolute;
-  left: 50%;
-  margin-top: 50%;
-  transform: translate(-50%, -50%);
-} */
-
-[data-v-f36f14d2] .markdown-preview h1 {
-  top: 15px;
+.shadow {
+  box-shadow: 0 4px 8px 0 rgba(36, 46, 66, 0.09);
 }
 </style>

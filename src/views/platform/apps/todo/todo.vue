@@ -3,7 +3,7 @@
     <v-card class="d-flex flex-row" color="#EEF0F3" flat tile>
       <div style="width: 240px; margin-right: 30px;">
         <v-card height="700" width="240" class="pa-4 shadow-1" flat>
-          <router-link :to="{name:'upload'}">
+          <router-link :to="{name:'edit'}">
             <v-btn height="44" width="208" depressed color="#3295C5" class="rounded-lg">
               <v-list-item-title class="pr-4 white--text text-overline">添加分类</v-list-item-title>
             </v-btn>

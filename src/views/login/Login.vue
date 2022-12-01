@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Test ref="child"></Test>
+    <!-- <Test ref="child"></Test> -->
     <div class="fr5g6jiA0WO8I5j8xFyEG">
       <div class="_38I18Pd760wgL69y-7BZQk">欢迎登录</div>
       <div class="_2dwZR1zkHPNhGvOXPg5e4j"></div>
@@ -37,7 +37,7 @@
 </template>
 <script>
 import { mapActions } from "vuex";
-import Test from "@/components/notification/notification.vue";
+// import Test from "@/components/notification/notification.vue";
 
 export default {
   name: "Login",
@@ -49,9 +49,9 @@ export default {
       },
     };
   },
-  components: {
-    Test,
-  },
+  // components: {
+  //   Test,
+  // },
   methods: {
     ...mapActions("userModule", { userlogin: "login" }),
     login() {

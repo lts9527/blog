@@ -35,33 +35,24 @@ const routes = [
         path: 'apps',
         name: 'apps',
         component: () => import('@/views/platform/platform.vue'),
-        // component: () => import('@/views/platform/platest.vue'),
         children: [
-          // {
-          //   path: 'upload/text/edit',
-          //   name: 'upload',
-          //   component: () => import('@/components/article/edit/editor.vue'),
-          // },
           {
-            path: "manager",
-            name: "manager",
+            path: "video",
+            name: "videoman",
             component: {
-              render: c => c("router-view"),
-            },
-            children: [
-              {
-                path: 'text',
-                name: 'manager-text',
-                component: () => import('@/views/platform/upload/manager/text.vue'),
-              }
-            ]
+              render: c => c("router-view")
+            }
+          },
+          {
+            path: "category",
+            name: "classman",
+            component: () => import("@/views/platform/category/category.vue")
           },
           {
             path: 'todo',
             name: 'todo',
             redirect: '/platform/apps/todo/articles',
-            component: () => import('@/views/platform/category/test.vue'),
-            // component: () => import('@/views/platform/category/category.vue'),
+            component: () => import('@/views/platform/apps/todo/todo.vue'),
             children: [
               {
                 path: 'articles',
@@ -73,21 +64,14 @@ const routes = [
                 name: 'draft',
                 component: () => import('@/views/platform/apps/todo/draft.vue'),
               },
-              // {
-              //   path: 'tags',
-              //   name: 'tags',
-              //   component: {
-              //     render: c => c("router-view"),
-              //   },
-              //   component: () => import('@/views/platform/apps/todo/tags.vue'),
-              // },
               {
-                path: 'upload/text/edit',
-                name: 'upload',
-                component: () => import('@/views/platform/apps/todo/editor.vue'),
+                path: 'edit',
+                name: 'edit',
+                component: () => import('@/views/platform/apps/todo/edit.vue'),
               },
             ]
           },
+
         ]
       },
     ]
@@ -95,18 +79,20 @@ const routes = [
   {
     path: '/article',
     name: 'article',
-    component: () => import('@/components/article/article.vue'),
+    component: {
+      render: c => c("router-view")
+    },
     children: [
-      {
-        path: 'markdowndit',
-        name: 'markdowndit',
-        component: () => import('@/components/article/edit/markdowndit.vue'),
-      },
-      {
-        path: 'editor',
-        name: 'editor',
-        component: () => import('@/components/article/edit/editor.vue'),
-      },
+      // {
+      //   path: 'markdowndit',
+      //   name: 'markdowndit',
+      //   component: () => import('@/components/article/edit/markdowndit.vue'),
+      // },
+      // {
+      //   path: 'editor',
+      //   name: 'editor',
+      //   component: () => import('@/components/article/edit/editor.vue'),
+      // },
       {
         path: 'list/test',
         name: 'list',
@@ -124,9 +110,8 @@ const router = new VueRouter({
   routes,
 });
 
-// 添加标签路由
+// 添加标签列表路由
 var addTags = function () {
-  // console.log("addTagsRoute")
   const tags = store.state.tags;
   let routerObj = {
     path: "",

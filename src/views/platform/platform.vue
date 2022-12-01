@@ -1,7 +1,7 @@
 <template>
   <v-app id="inspire" class="v-application--wrap">
     <v-app-bar id="head-bar" app color="white">
-      <v-avatar style="margin-left: 70px;" class="mr-16" color="grey darken-1" size="32"></v-avatar>
+      <v-avatar class="mr-16 ml-16" color="grey darken-1" size="32"></v-avatar>
       <v-btn v-for="link in links" :key="link" text>{{ link }}</v-btn>
       <v-spacer></v-spacer>
       <v-responsive max-width="260">
@@ -13,7 +13,7 @@
         <v-sheet id="sheet" min-height="100%">
           <v-list color="transparent">
             <v-list-item-content>
-              <router-link :to="{name:'upload'}">
+              <router-link :to="{name:'edit'}">
                 <v-btn class="ml-7" height="41" width="136" depressed color="primary">
                   <v-icon class="pr-3">mdi-export-variant</v-icon>
                   <v-list-item-title class="pr-4">发布</v-list-item-title>
@@ -27,7 +27,7 @@
                     <v-list-item-title @click="item.show = !item.show">{{item.name}}</v-list-item-title>
                   </v-list-item-content>
                 </template>
-                <v-list-item v-for="v, k in item.sub" :key="k" @click="to(v)">
+                <v-list-item v-for="v, k in item.minor" :key="k" :to="{name: v}">
                   <v-list-item-content>
                     <router-link :to="{name: v}">
                       <v-list-item-subtitle v-text="k"></v-list-item-subtitle>
@@ -46,7 +46,7 @@
         </v-sheet>
       </v-col>
       <v-col>
-        <v-sheet rounded="lg" id="contentarea" class="align-stretch" lg="9">
+        <v-sheet rounded="lg" id="contentarea">
           <router-view></router-view>
         </v-sheet>
       </v-col>
@@ -60,16 +60,19 @@ export default {
 
   data: () => ({
     links: ["Dashboard", "Messages", "Profile", "Updates"],
-    show: false,
     items: [
       {
         icon: "$expand",
         show: false,
         name: "内容管理",
-        sub: {
-          文章管理: "manager-text",
-          视频管理: "",
-          分类管理: "articles",
+        minor: {
+          // 旧版
+          // 文章管理: "manager-text",
+          // 视频管理: "video",
+          // 分类管理: "articles",
+          文章管理: "todo",
+          视频管理: "videoman",
+          分类管理: "classman",
         },
       },
       {
@@ -87,9 +90,6 @@ export default {
       }
       return "";
     },
-    to(path) {
-      this.$router.push({ name: path });
-    },
   },
 };
 </script>
@@ -103,7 +103,7 @@ body {
 #contentarea {
   margin-top: 20px;
   margin-left: 220px;
-  background-color: #eef0f3;
+  /* background-color: #eef0f3; */
 }
 
 #col-1 {
