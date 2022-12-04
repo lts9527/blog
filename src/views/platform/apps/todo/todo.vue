@@ -1,114 +1,109 @@
 <template>
-  <div>
-    <v-card class="d-flex flex-row" color="#EEF0F3" flat tile>
-      <div style="width: 240px; margin-right: 30px;">
-        <v-card height="700" width="240" class="pa-4 shadow-1" flat>
-          <router-link :to="{name:'edit'}">
-            <v-btn height="44" width="208" depressed color="#3295C5" class="rounded-lg">
-              <v-list-item-title class="pr-4 white--text text-overline">添加分类</v-list-item-title>
-            </v-btn>
-          </router-link>
-          <v-btn height="44" width="208" depressed color="#3295C5" class="rounded-lg mt-4">
-            <v-list-item-title @click="tag =true" class="pr-4 white--text text-overline">添加标签</v-list-item-title>
+  <v-card class="d-flex flex-row" color="#EEF0F3" flat tile>
+    <div style="width: 240px; margin-right: 30px;">
+      <v-card height="700" width="240" class="pa-4 shadow-1" flat>
+        <router-link :to="{name:'edit'}">
+          <v-btn height="44" width="208" depressed color="#3295C5" class="rounded-lg">
+            <v-list-item-title class="pr-4 white--text text-overline">添加分类</v-list-item-title>
           </v-btn>
-          <v-list nav class="pa-0 pt-6 text-left">
-            <v-list-item-group v-model="selectedItem" color="#3295C5">
+        </router-link>
+        <v-btn height="44" width="208" depressed color="#3295C5" class="rounded-lg mt-4">
+          <v-list-item-title @click="tag =true" class="pr-4 white--text text-overline">添加标签</v-list-item-title>
+        </v-btn>
+        <v-list nav class="pa-0 pt-6 text-left">
+          <v-list-item-group v-model="selectedItem" color="#3295C5">
+            <v-list-item
+              :to="{name: item.route}"
+              @click="jump(item.route)"
+              class="height-48 width-208"
+              v-for="(item, i) in items"
+              :key="item.text"
+            >
+              <v-list-item-icon>
+                <v-icon dense v-text="item.icon"></v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title class="text-left font-weight-medium" v-text="item.text"></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-subheader style="margin-left: -10px">标签</v-subheader>
+
+            <div>
               <v-list-item
-                :to="{name: item.route}"
-                @click="jump(item.route)"
-                class="height-48 width-208"
-                v-for="(item, i) in items"
-                :key="item.text"
+                @click="separator(itemTag.name, itemTag.id)"
+                dense
+                class="width-208 height-40"
+                v-for="(itemTag, i) in tags"
+                :key="itemTag.name"
               >
                 <v-list-item-icon>
-                  <v-icon dense v-text="item.icon"></v-icon>
+                  <v-icon small>mdi-tag-outline</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title class="text-left font-weight-medium" v-text="item.text"></v-list-item-title>
+                  <v-list-item-title class="font-weight-medium text-caption" v-text="itemTag.name"></v-list-item-title>
                 </v-list-item-content>
+                <v-list-item-action class="pa-0 px-0">
+                  <v-menu transition="fade-transition" offset-y>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn icon small @click="edit = true" v-bind="attrs" v-on="on">
+                        <v-icon small>mdi-dots-vertical</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list>
+                      <v-list-item dense @click="editTag(itemTag, i)">
+                        <v-list-item-content>
+                          <v-list-item-title>编辑标签</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                      <v-list-item @click="delTag(itemTag.id, i)" dense>
+                        <v-list-item-content>
+                          <v-list-item-title>删除标签</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </v-list-item-action>
               </v-list-item>
-              <v-subheader style="margin-left: -10px">标签</v-subheader>
-
-              <div>
-                <v-list-item
-                  @click="separator(itemTag.name, itemTag.id)"
-                  dense
-                  class="width-208 height-40"
-                  v-for="(itemTag, i) in tags"
-                  :key="itemTag.name"
-                >
-                  <v-list-item-icon>
-                    <v-icon small>mdi-tag-outline</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title
-                      class="font-weight-medium text-caption"
-                      v-text="itemTag.name"
-                    ></v-list-item-title>
-                  </v-list-item-content>
-                  <v-list-item-action class="pa-0 px-0">
-                    <v-menu transition="fade-transition" offset-y>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn icon small @click="edit = true" v-bind="attrs" v-on="on">
-                          <v-icon small>mdi-dots-vertical</v-icon>
-                        </v-btn>
-                      </template>
-                      <v-list>
-                        <v-list-item dense @click="editTag(itemTag, i)">
-                          <v-list-item-content>
-                            <v-list-item-title>编辑标签</v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item @click="delTag(itemTag.id, i)" dense>
-                          <v-list-item-content>
-                            <v-list-item-title>删除标签</v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </v-list-item-action>
-                </v-list-item>
-              </div>
-              <v-card v-show="tag" height="105px" width="100%" class="mb-5 mt-2 shadow-1">
-                <v-text-field
-                  dense
-                  autofocus
-                  v-model="editedTag.name"
-                  height="28"
-                  hide-details="auto"
-                  placeholder="输入标签名称"
-                  class="mt-2 pt-4 text-caption px-5"
-                ></v-text-field>
-                <v-card-actions class="px-5 mt-2">
-                  <v-spacer>
-                    <v-btn
-                      width="70"
-                      color="#FFFFFF"
-                      class="black--text shadow"
-                      small
-                      depressed
-                      @click="close"
-                    >取消</v-btn>
-                  </v-spacer>
+            </div>
+            <v-card v-show="tag" height="105px" width="100%" class="mb-5 mt-2 shadow-1">
+              <v-text-field
+                dense
+                autofocus
+                v-model="editedTag.name"
+                height="28"
+                hide-details="auto"
+                placeholder="输入标签名称"
+                class="mt-2 pt-4 text-caption px-5"
+              ></v-text-field>
+              <v-card-actions class="px-5 mt-2">
+                <v-spacer>
                   <v-btn
                     width="70"
-                    color="#3295C5"
-                    class="white--text"
+                    color="#FFFFFF"
+                    class="black--text shadow"
                     small
                     depressed
-                    @click="save"
-                  >确定</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-list-item-group>
-          </v-list>
-        </v-card>
-      </div>
-      <v-card class="mr-6 shadow-1" width="100%" flat>
-        <router-view ref="child"></router-view>
+                    @click="close"
+                  >取消</v-btn>
+                </v-spacer>
+                <v-btn
+                  width="70"
+                  color="#3295C5"
+                  class="white--text"
+                  small
+                  depressed
+                  @click="save"
+                >确定</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-list-item-group>
+        </v-list>
       </v-card>
+    </div>
+    <v-card class="mr-6 shadow-1" width="100%" flat>
+      <router-view ref="child"></router-view>
     </v-card>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -250,12 +245,11 @@ export default {
         let name = this.editedTag.name;
         this.addTag({ name: this.editedTag.name })
           .then((res) => {
-            console.log("Res", res);
             this.tags.push({
+              id: res.details.id,
               icon: "mdi-tag-outline",
               name: name,
             });
-            this.addTagRoute(res.details.id);
           })
           .catch((err) => {
             console.log("addTag err:", err.response.data.message);

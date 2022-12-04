@@ -34,6 +34,7 @@
             </v-btn>
           </v-list-item-action>
           <p style="position: absolute;right: 100px;" class="caption ma-0">1 - 2 of 428</p>
+          <!-- <p style="position: absolute;right: 100px;" class="caption ma-0">1 - 2 of 428</p>
           <v-list-item-action class="ma-0 ml-auto">
             <v-btn icon>
               <v-icon color="rgba(0,0,0,.26)">mdi-chevron-left</v-icon>
@@ -43,7 +44,7 @@
             <v-btn icon>
               <v-icon>mdi-chevron-right</v-icon>
             </v-btn>
-          </v-list-item-action>
+          </v-list-item-action>-->
         </v-list-item>
       </v-card>
       <v-divider></v-divider>
@@ -138,6 +139,10 @@
           </template>
         </v-card>
       </v-list>
+
+      <div id="paging-bar">
+        <v-pagination circle v-model="page" :length="15" :total-visible="9"></v-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -149,6 +154,7 @@ export default {
   props: ["list"],
   data() {
     return {
+      page: 1,
       active: [],
       mark: false,
       details: [
@@ -219,6 +225,13 @@ export default {
 </script>
 
 <style scoped>
+#paging-bar {
+  position: absolute;
+  width: 100%;
+  bottom: 5px;
+  box-shadow: 0 0px 0px;
+}
+
 #article-title {
   position: absolute;
   top: 15px;

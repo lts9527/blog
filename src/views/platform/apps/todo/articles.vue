@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <ArtList :list="list" :article="article" v-on:opEdit="opEdit"></ArtList>
-  </div>
+  <ArtList :list="list" :article="article" v-on:opEdit="opEdit"></ArtList>
 </template>
 
 <script>

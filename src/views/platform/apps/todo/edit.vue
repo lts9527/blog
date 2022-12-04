@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <Edit v-on:before="before"></Edit>
-  </div>
+  <Edit v-on:before="before"></Edit>
 </template>
     
     <script>

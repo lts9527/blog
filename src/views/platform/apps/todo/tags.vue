@@ -1,8 +1,5 @@
 <template>
-  <div>
-    <!-- <h2>ID: {{ $route.params.id }}</h2> -->
-    <ArtList :list="list" :article="article" v-on:opEdit="opEdit"></ArtList>
-  </div>
+  <ArtList :list="list" :article="article" v-on:opEdit="opEdit"></ArtList>
 </template>
 
 <script>
@@ -22,6 +19,7 @@ export default {
     };
   },
   created() {
+    // console.log("route name", this.$router.options.routes);
     if (this.$store.state.artList.length === 0) {
       this.artList({})
         .then((res) => {
