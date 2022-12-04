@@ -12,7 +12,7 @@
             <v-list-item-title @click="tag =true" class="pr-4 white--text text-overline">添加标签</v-list-item-title>
           </v-btn>
           <v-list nav class="pa-0 pt-6 text-left">
-            <v-list-item-group v-model="selectedItem" color="primary">
+            <v-list-item-group v-model="selectedItem" color="#3295C5">
               <v-list-item
                 :to="{name: item.route}"
                 @click="jump(item.route)"
@@ -29,46 +29,51 @@
               </v-list-item>
               <v-subheader style="margin-left: -10px">标签</v-subheader>
 
-              <v-list-item
-                @click="separator(item.text, i)"
-                dense
-                class="width-208 height-40"
-                v-for="(item, i) in tags"
-                :key="item.text"
-              >
-                <v-list-item-icon>
-                  <v-icon small v-text="item.icon"></v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title class="font-weight-medium text-caption" v-text="item.text"></v-list-item-title>
-                </v-list-item-content>
-                <v-list-item-action class="pa-0 px-0">
-                  <v-menu transition="fade-transition" offset-y>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn icon small @click="edit = true" v-bind="attrs" v-on="on">
-                        <v-icon small>mdi-dots-vertical</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list>
-                      <v-list-item dense @click="editTag(item, i)">
-                        <v-list-item-content>
-                          <v-list-item-title>编辑标签</v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                      <v-list-item @click="delTag(i)" dense>
-                        <v-list-item-content>
-                          <v-list-item-title>删除标签</v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </v-list-item-action>
-              </v-list-item>
+              <div>
+                <v-list-item
+                  @click="separator(itemTag.name, itemTag.id)"
+                  dense
+                  class="width-208 height-40"
+                  v-for="(itemTag, i) in tags"
+                  :key="itemTag.name"
+                >
+                  <v-list-item-icon>
+                    <v-icon small>mdi-tag-outline</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      class="font-weight-medium text-caption"
+                      v-text="itemTag.name"
+                    ></v-list-item-title>
+                  </v-list-item-content>
+                  <v-list-item-action class="pa-0 px-0">
+                    <v-menu transition="fade-transition" offset-y>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn icon small @click="edit = true" v-bind="attrs" v-on="on">
+                          <v-icon small>mdi-dots-vertical</v-icon>
+                        </v-btn>
+                      </template>
+                      <v-list>
+                        <v-list-item dense @click="editTag(itemTag, i)">
+                          <v-list-item-content>
+                            <v-list-item-title>编辑标签</v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item @click="delTag(itemTag.id, i)" dense>
+                          <v-list-item-content>
+                            <v-list-item-title>删除标签</v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
+                  </v-list-item-action>
+                </v-list-item>
+              </div>
               <v-card v-show="tag" height="105px" width="100%" class="mb-5 mt-2 shadow-1">
                 <v-text-field
                   dense
                   autofocus
-                  v-model="editedTag.text"
+                  v-model="editedTag.name"
                   height="28"
                   hide-details="auto"
                   placeholder="输入标签名称"
@@ -107,7 +112,7 @@
 </template>
 
 <script>
-import component from "@/views/platform/apps/todo/tags.vue";
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -115,10 +120,10 @@ export default {
       edit: false,
       selectedItem: 0,
       editedIndex: -1,
-      tagcontent: "",
       editedTag: {
+        id: 0,
         icon: "",
-        text: "",
+        name: "",
       },
       items: [
         {
@@ -132,53 +137,42 @@ export default {
           text: "草稿",
         },
       ],
-      tags: [
-        {
-          icon: "mdi-tag-outline",
-          text: "标签一",
-        },
-        {
-          icon: "mdi-tag-outline",
-          text: "标签二",
-        },
-        {
-          icon: "mdi-tag-outline",
-          text: "标签三",
-        },
-      ],
-      templist: [
-        {
-          tags: ["标签一"],
-          browse: 0,
-          comments: 0,
-          stars: 0,
-          title: "test",
-          name: "tom",
-          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-          content: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
-        },
-        {
-          tags: ["标签三", "标签二"],
-          browse: 0,
-          comments: 0,
-          stars: 0,
-          title: "kubernetes 高可用部署工具:sealos",
-          name: "1",
-          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-          content: `I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
-        },
-      ],
+      tags: [],
+      templist: [],
     };
   },
-  created() {},
+  created() {
+    // 请求标签列表
+    this.tagList()
+      .then((tags) => {
+        // this.tags = JSON.parse(JSON.stringify(tags));
+        // this.$store.state.tags = JSON.parse(JSON.stringify(tags));
+        this.tags = tags;
+        this.$store.state.tags = tags;
+      })
+      .catch((err) => {
+        console.log("get article list err:", err);
+      });
+  },
   // 初始化文章列表
   mounted() {
     // this.defaultList();
   },
   methods: {
+    ...mapActions("tagModule", {
+      tagList: "list",
+      addTag: "add",
+      deleteTag: "del",
+      updateTag: "update",
+    }),
+
+    ...mapActions("articleModule", {
+      artList: "list",
+    }),
+
     jump(name, i) {
       if (name === "articles") {
-        this.setdefaultTagsList();
+        // this.setdefaultTagsList();
       }
       // this.$router.push({ name: i });
     },
@@ -187,12 +181,18 @@ export default {
       this.$refs.child.settemplist(this.$store.state.detaultlist);
     },
 
-    separator(tag, i) {
+    separator(tag, id) {
+      if (id == undefined) {
+        return;
+      }
+      let list = this.$store.state.artList;
+      // let list = JSON.parse(JSON.stringify(this.$store.state.artList));
       let templist = [];
-      for (let i = 0, len = this.templist.length; i < len; i++) {
-        this.templist[i].tags.forEach((element) => {
-          if (tag === element) {
-            templist.push(this.templist[i]);
+      for (let i = 0, len = list.length; i < len; i++) {
+        list[i].tags.forEach((element) => {
+          // console.log("element", element);
+          if (id === element) {
+            templist.push(list[i]);
           }
         });
       }
@@ -200,11 +200,22 @@ export default {
         this.$refs.child.settemplist(templist);
       }
       // this.$store.state.templist = templist;
-      this.$router.push({ name: `tags-${i}`, params: { templist: templist } });
+      // this.$router.push({ name: `tags-${i}`, params: { templist: templist } });
+      this.$router.push({
+        name: `tags`,
+        params: { id: id, templist: templist },
+      });
     },
 
-    delTag(i) {
-      this.tags.splice(i, 1);
+    delTag(id, i) {
+      this.deleteTag({ id })
+        .then((res) => {
+          this.tags.splice(i, 1);
+          console.log("this router", this.$router.options.routes);
+        })
+        .catch((err) => {
+          console.log("addTag err:", err.response.data.message);
+        });
     },
 
     editTag(item) {
@@ -214,21 +225,41 @@ export default {
     },
 
     save() {
-      if (this.editedTag.text === "") {
+      if (this.editedTag.name === "") {
         return;
       }
       if (this.editedIndex > -1) {
-        Object.assign(this.tags[this.editedIndex], this.editedTag);
+        let index = this.editedIndex;
+        let editedTag = this.editedTag;
+        this.updateTag({
+          id: this.editedTag.id,
+          name: this.editedTag.name,
+        })
+          .then((res) => {
+            Object.assign(this.tags[index], editedTag);
+          })
+          .catch((err) => {
+            console.log("updateTag err:", err);
+          });
       } else {
         for (let i = 0, len = this.tags.length; i < len; i++) {
-          if (this.editedTag.text === this.tags[i].text) {
+          if (this.editedTag.name === this.tags[i].text) {
             return;
           }
         }
-        this.tags.push({
-          icon: "mdi-tag-outline",
-          text: this.editedTag.text,
-        });
+        let name = this.editedTag.name;
+        this.addTag({ name: this.editedTag.name })
+          .then((res) => {
+            console.log("Res", res);
+            this.tags.push({
+              icon: "mdi-tag-outline",
+              name: name,
+            });
+            this.addTagRoute(res.details.id);
+          })
+          .catch((err) => {
+            console.log("addTag err:", err.response.data.message);
+          });
       }
       this.close();
     },
@@ -238,10 +269,24 @@ export default {
         this.tag = false;
         this.editedIndex = -1;
         this.editedTag = {
+          id: 0,
           icon: "",
-          text: "",
+          name: "",
         };
       });
+    },
+
+    addTagRoute(id) {
+      const route = {
+        name: "tags",
+        params: {
+          id,
+        },
+        meta: {
+          title: `动态路由-${id}`,
+        },
+      };
+      this.$router.push(route);
     },
   },
 };

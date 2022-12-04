@@ -1,13 +1,12 @@
 import storageService from '@/service/storageService';
-import categoryService from '@/service/categoryService';
+import tagService from '@/service/tagService';
 
-const categoryModule = {
+const tagModule = {
     namespaced: true,
     actions: {
-        create(context, { list }) {
+        add(context, { name, color }) {
             return new Promise((resolve, reject) => {
-                categoryService.create({ list }).then((res) => {
-                    console.log("response", res.data)
+                tagService.add({ name, color }).then((res) => {
                     // 保存token
                     // context.commit('SET_TOKEN', res.data.data.token);
                     // return articleService.info();
@@ -21,15 +20,10 @@ const categoryModule = {
                 });
             });
         },
-        del(context, { id, type }) {
-            const req = {
-                id: id,
-                type: type,
-            };
-            console.log("Req", JSON.stringify(req))
+        del(context, { id }) {
+            // console.log("Req", JSON.stringify(req))
             return new Promise((resolve, reject) => {
-                categoryService.del(req).then((res) => {
-                    console.log("response", res.data)
+                tagService.del({ id }).then((res) => {
                     return res.data
                 }).then((res) => {
                     resolve(res);
@@ -40,8 +34,19 @@ const categoryModule = {
         },
         list(context) {
             return new Promise((resolve, reject) => {
-                categoryService.list({}).then((res) => {
+                tagService.list({}).then((res) => {
                     return res.data.details;
+                }).then((res) => {
+                    resolve(res);
+                }).catch((err) => {
+                    reject(err);
+                });
+            })
+        },
+        update(context, { id, name }) {
+            return new Promise((resolve, reject) => {
+                tagService.update({ id, name }).then((res) => {
+                    return res.data;
                 }).then((res) => {
                     resolve(res);
                 }).catch((err) => {
@@ -51,4 +56,4 @@ const categoryModule = {
         }
     },
 };
-export default categoryModule;
+export default tagModule;

@@ -8,6 +8,8 @@ const articleModule = {
     //     userInfo: storageService.get(storageService.USER_INFO) ? JSON.parse(storageService.get(storageService.USER_INFO)) : null, //eslint-disable-line
     // },
 
+
+    // 同步
     // mutations: {
     //     SET_TOKEN(state, token) {
     //         // 更新本地缓存
@@ -23,11 +25,11 @@ const articleModule = {
     //     },
     // },
 
+    // 异步
     actions: {
-        create(context, { user_id, category_id, title, content, tags }) {
+        create(context, { user_id, cover, title, content, tags }) {
             return new Promise((resolve, reject) => {
-                articleService.create({ user_id, category_id, title, content, tags }).then((res) => {
-                    console.log("response", res.data)
+                articleService.create({ user_id, cover, title, content, tags }).then((res) => {
                     // 保存token
                     // context.commit('SET_TOKEN', res.data.data.token);
                     // return articleService.info();
@@ -35,6 +37,28 @@ const articleModule = {
                 }).then((res) => {
                     // 保存用户信息
                     // context.commit('SET_USERINFO', res.data.data.user);
+                    resolve(res);
+                }).catch((err) => {
+                    reject(err);
+                });
+            });
+        },
+        update(content, article) {
+            return new Promise((resolve, reject) => {
+                articleService.update(article).then((res) => {
+                    return res.data
+                }).then((res) => {
+                    resolve(res);
+                }).catch((err) => {
+                    reject(err);
+                });
+            });
+        },
+        del(content, { id }) {
+            return new Promise((resolve, reject) => {
+                articleService.del({ id }).then((res) => {
+                    return res.data
+                }).then((res) => {
                     resolve(res);
                 }).catch((err) => {
                     reject(err);

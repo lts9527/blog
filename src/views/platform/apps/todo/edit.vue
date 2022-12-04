@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Edit :article="article" v-on:before="before"></Edit>
+    <Edit v-on:before="before"></Edit>
   </div>
 </template>
     
@@ -69,22 +69,22 @@ export default {
 
   // 加载页面完毕时获取分类列表
   created() {
-    mapActions("articleModule", {
-      articleList: "list",
-    });
+    // mapActions("articleModule", {
+    //   articleList: "list",
+    // });
     // 请求api
-    this.articleList(9527)
-      .then((list) => {
-        this.btns = list;
-      })
-      .catch((err) => {
-        console.log("get article list err:", err.response.data.message);
-      });
+    // this.articleList(9527)
+    //   .then((list) => {
+    //     this.btns = list;
+    //   })
+    //   .catch((err) => {
+    //     console.log("get article list err:", err.response.data.message);
+    //   });
   },
   methods: {
     ...mapActions("articleModule", {
       articleCreate: "create",
-      articleList: "list",
+      // articleList: "list",
     }),
     getCover() {
       const fileReader = new FileReader();

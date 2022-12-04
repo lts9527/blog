@@ -1,41 +1,19 @@
 <template>
   <div>
-    <List v-show="!edit" :list="list" v-on:opEdit="opEdit">
-      <template v-slot:create-time>2022-11-06 19:33:13</template>
-      <template v-slot:edit-time>2022-11-06 19:33:13</template>
-    </List>
-
-    <Edit v-if="edit" :article="article" v-on:before="returnList"></Edit>
+    <ArtList :list="list" :article="article" v-on:opEdit="opEdit"></ArtList>
   </div>
 </template>
 
 <script>
-import List from "@/components/article/list/list.vue";
-import Edit from "@/components/article/edit/edit.vue";
+import ArtList from "@/components/article/artList/artList.vue";
 export default {
   components: {
-    List,
-    Edit,
+    ArtList,
   },
   data() {
     return {
       edit: false,
-      article: {
-        user_id: 9527,
-        category_id: 0,
-        title: "test",
-        content: `\`\`\`js
-      import Vue from 'vue';
-      import VueMarkdownEditor from '@kangc/v-md-editor';
-      import '@kangc/v-md-editor/lib/style/base-editor.css';
-      import vuepressTheme from '@kangc/v-md-editor/lib/theme/vuepress.js';
-      
-      VueMarkdownEditor.use(vuepressTheme);
-      
-      Vue.use(VueMarkdownEditor);
-      \`\`\`
-      `,
-      },
+      article: {},
       list: [],
     };
   },
@@ -43,8 +21,14 @@ export default {
     this.list = this.$store.state.detaultlist;
   },
   methods: {
-    opEdit(value) {
-      this.edit = true;
+    // 打开编辑器
+    opEdit(id) {
+      this.list.forEach((element, index) => {
+        if (element.id === id) {
+          this.article = element;
+          return;
+        }
+      });
     },
 
     returnList(value) {

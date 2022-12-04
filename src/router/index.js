@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import HomeView from '@/components/home/home';
 import store from '../store';
+import tagReq from "@/store/module/tag"
 
 // 获取原型对象上的push函数
 const originalPush = VueRouter.prototype.push
@@ -69,6 +70,17 @@ const routes = [
                 name: 'edit',
                 component: () => import('@/views/platform/apps/todo/edit.vue'),
               },
+              {
+                path: 'tags/:id',
+                name: 'tags',
+                meta: {
+                  icon: 'md-flower',
+                  title: route => `{{ tags }}-${route.params.id}`,
+                  notCache: true,
+                  beforeCloseName: 'before_close_normal'
+                },
+                component: () => import('@/views/platform/apps/todo/tags.vue')
+              },
             ]
           },
 
@@ -109,23 +121,5 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
-
-// 添加标签列表路由
-var addTags = function () {
-  const tags = store.state.tags;
-  let routerObj = {
-    path: "",
-    name: "",
-    component: () => import("@/views/platform/apps/todo/articles.vue"),
-  };
-  tags.forEach((element, index) => {
-    routerObj.path = `/platform/apps/todo/${index}`;
-    routerObj.name = `tags-${index}`;
-    router.addRoute("todo", routerObj);
-  });
-  // addTags = function () {}
-}
-
-addTags()
 
 export default router;
