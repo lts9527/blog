@@ -1,5 +1,5 @@
 <template>
-  <ArtList :artData="artData" :article="article" v-on:opEdit="opEdit"></ArtList>
+  <ArtList :artData="artData" :article="article" :pagination="pagination" v-on:opEdit="opEdit"></ArtList>
 </template>
 
 <script>
@@ -16,6 +16,7 @@ export default {
       edit: false,
       artData: [],
       article: {},
+      pagination: true,
     };
   },
   created() {
@@ -51,6 +52,11 @@ export default {
 
     setList(value) {
       this.artData = value;
+      if (value.length == 0) {
+        this.pagination = false;
+      } else {
+        this.pagination = true;
+      }
     },
 
     opEdit(id) {

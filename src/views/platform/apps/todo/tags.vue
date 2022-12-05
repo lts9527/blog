@@ -1,5 +1,5 @@
 <template>
-  <ArtList :artData="artData" :article="article" v-on:opEdit="opEdit"></ArtList>
+  <ArtList :artData="artData" :pagination="pagination" :article="article" v-on:opEdit="opEdit"></ArtList>
 </template>
 
 <script>
@@ -14,11 +14,13 @@ export default {
     return {
       tagID: this.$route.params.id,
       edit: false,
+      pagination: true,
       article: {},
       artData: [],
     };
   },
   created() {
+    console.log("1118988989989");
     // console.log("route name", this.$router.options.routes);
     if (this.$store.state.artData.length === 0) {
       this.artList({})
@@ -47,7 +49,13 @@ export default {
     }),
 
     setList(value) {
+      console.log("value", value);
       this.artData.list = value;
+      if (value.length == 0) {
+        this.pagination = false;
+      } else {
+        this.pagination = true;
+      }
     },
 
     filtrt() {

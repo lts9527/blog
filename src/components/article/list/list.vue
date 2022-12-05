@@ -130,7 +130,14 @@
       </v-list>
 
       <div id="paging-bar" @click.stop="pags(page)">
-        <v-pagination v-on:next="next" circle v-model="page" :length="lastPage" :total-visible="9"></v-pagination>
+        <v-pagination
+          v-if="pagination"
+          v-on:next="next"
+          circle
+          v-model="page"
+          :length="lastPage"
+          :total-visible="9"
+        ></v-pagination>
       </div>
     </div>
   </div>
@@ -141,7 +148,7 @@ import { mapActions } from "vuex";
 import { pagerCount } from "@/utils/utils.js";
 export default {
   name: "list",
-  props: ["artData"],
+  props: ["artData", "pagination"],
   data() {
     return {
       page: 1,
@@ -150,7 +157,6 @@ export default {
       tempList: [],
       mark: false,
       activeAll: false,
-      pagination: true,
       details: [
         {
           name: "浏览",
@@ -175,7 +181,7 @@ export default {
     // 获取当前页数的文章列表
     listc() {
       if (this.artData.list == undefined) {
-        this.pagination = false;
+        // this.pagination = false;
         return;
       }
       let num = 0;

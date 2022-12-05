@@ -44,43 +44,46 @@
               </v-subheader>
             </div>
 
-            <div>
-              <v-list-item
-                @click="separator(itemTag.name, itemTag.id)"
-                dense
-                class="width-208 height-40"
-                v-for="(itemTag, i) in tags"
-                :key="itemTag.name"
-              >
-                <v-list-item-icon>
-                  <v-icon small>mdi-tag-outline</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title class="font-weight-medium text-caption" v-text="itemTag.name"></v-list-item-title>
-                </v-list-item-content>
-                <v-list-item-action class="pa-0 px-0">
-                  <v-menu transition="fade-transition" offset-y>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn icon small @click="edit = true" v-bind="attrs" v-on="on">
-                        <v-icon small>mdi-dots-vertical</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list>
-                      <v-list-item dense @click="editTag(itemTag, i)">
-                        <v-list-item-content>
-                          <v-list-item-title>编辑标签</v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                      <v-list-item @click="delTag(itemTag.id, i)" dense>
-                        <v-list-item-content>
-                          <v-list-item-title>删除标签</v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </v-list-item-action>
-              </v-list-item>
-            </div>
+            <v-list-item
+              @click="separator(itemTag.name, itemTag.id)"
+              :to="{
+        name: `tags`,
+        params: { id: itemTag.id },
+      }"
+              dense
+              class="width-208 height-40"
+              v-for="(itemTag, i) in tags"
+              :key="itemTag.name"
+            >
+              <v-list-item-icon>
+                <v-icon small>mdi-tag-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title class="font-weight-medium text-caption" v-text="itemTag.name"></v-list-item-title>
+              </v-list-item-content>
+              <!-- <v-list-item-action class="pa-0 px-0">
+                <v-menu transition="fade-transition" offset-y>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn icon small @click="edit = true" v-bind="attrs" v-on="on">
+                      <v-icon small>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item dense @click="editTag(itemTag, i)">
+                      <v-list-item-content>
+                        <v-list-item-title>编辑标签</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item @click="delTag(itemTag.id, i)" dense>
+                      <v-list-item-content>
+                        <v-list-item-title>删除标签</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-list-item-action>-->
+            </v-list-item>
+
             <v-card v-show="tag" height="105px" width="100%" class="mb-5 mt-2 shadow-1">
               <v-text-field
                 dense
@@ -197,8 +200,9 @@ export default {
       if (id == undefined) {
         return;
       }
-      let list = this.$store.state.artData;
-      // let list = JSON.parse(JSON.stringify(this.$store.state.artData));
+      // let list = this.$store.state.artData.list;
+      let list = JSON.parse(JSON.stringify(this.$store.state.artData.list));
+      console.log("list", list);
       let templist = [];
       for (let i = 0, len = list.length; i < len; i++) {
         list[i].tags.forEach((element) => {
@@ -211,10 +215,10 @@ export default {
       if (this.$refs.child.setList) {
         this.$refs.child.setList(templist);
       }
-      this.$router.push({
-        name: `tags`,
-        params: { id: id },
-      });
+      // this.$router.push({
+      //   name: `tags`,
+      //   params: { id: id },
+      // });
     },
 
     delTag(id, i) {

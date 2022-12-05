@@ -1,6 +1,6 @@
 <template>
   <div>
-    <List v-show="!edit" :artData="artData" v-on:opEdit="opEdit"></List>
+    <List v-show="!edit" :artData="artData" :pagination="pagination" v-on:opEdit="opEdit"></List>
     <Edit v-if="edit" :article="article" mode="update" v-on:before="returnList">
       <template #item-name>修改文章</template>
     </Edit>
@@ -19,6 +19,7 @@ export default {
   props: {
     article: {},
     artData: [],
+    pagination: Boolean,
   },
   data() {
     return {
