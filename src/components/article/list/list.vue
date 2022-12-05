@@ -34,18 +34,6 @@
               <v-icon v-show="activeAll" @click="deleteArtList">mdi-delete-outline</v-icon>
             </v-btn>
           </v-list-item-action>
-          <p style="position: absolute;right: 100px;" class="caption ma-0">1 - 2 of 428</p>
-          <!-- <p style="position: absolute;right: 100px;" class="caption ma-0">1 - 2 of 428</p>
-          <v-list-item-action class="ma-0 ml-auto">
-            <v-btn icon>
-              <v-icon color="rgba(0,0,0,.26)">mdi-chevron-left</v-icon>
-            </v-btn>
-          </v-list-item-action>
-          <v-list-item-action class="ma-0">
-            <v-btn icon>
-              <v-icon>mdi-chevron-right</v-icon>
-            </v-btn>
-          </v-list-item-action>-->
         </v-list-item>
       </v-card>
       <v-divider></v-divider>
@@ -142,7 +130,7 @@
       </v-list>
 
       <div id="paging-bar" @click.stop="pags(page)">
-        <v-pagination  v-on:next="next" circle v-model="page" :length="15" :total-visible="9"></v-pagination>
+        <v-pagination v-on:next="next" circle v-model="page" :length="lastPage" :total-visible="9"></v-pagination>
       </div>
     </div>
   </div>
@@ -150,16 +138,19 @@
 
 <script>
 import { mapActions } from "vuex";
+import { pagerCount } from "@/utils/utils.js";
 export default {
   name: "list",
-  props: ["list"],
+  props: ["artData"],
   data() {
     return {
       page: 1,
+      lastPage: 0,
       active: [],
-      testlist: [],
+      tempList: [],
       mark: false,
       activeAll: false,
+      pagination: true,
       details: [
         {
           name: "浏览",
@@ -179,39 +170,48 @@ export default {
       ],
     };
   },
-  created() {
+  created() {},
+  computed: {
+    // 获取当前页数的文章列表
+    listc() {
+      if (this.artData.list == undefined) {
+        this.pagination = false;
+        return;
+      }
       let num = 0;
       let index = 0;
-      var arr = new Array();
-      for(var i=0;i<5;i++){        //一维长度为5
+      let last = Number(pagerCount(this.artData.total, 4));
+      let arr = new Array();
+      const art = JSON.parse(JSON.stringify(this.artData));
+
+      if (art.length != 0) {
+        this.lastPage = last;
+        // 根据最后页码生成分页的二维数组大小
+        for (let i = 0; i < last; i++) {
+          // 二维数组
           arr[i] = new Array();
-        //   for(var j=0;j<4;j++){    //二维长度为5
-        //       arr[i][j] = 0;
-        // }
-      }
-      const list = this.$store.state.detaultlist
-      for (let i = 0, len = list.length; i < len; i++) {
-        if (num === 4) {
-          num = 0;
-          index++;
         }
-        arr[index].push(list[i])
-        num++
+        // 以4篇文章为一页添加
+        for (let i = 0, len = art.list.length; i < len; i++) {
+          if (num === 4) {
+            num = 0;
+            index++;
+          }
+          arr[index].push(art.list[i]);
+          num++;
+        }
+
+        // console.log("index", index);
+        this.tempList = arr;
+        // 返回当前页数的文章
+        return this.tempList[this.page - 1];
       }
-      this.testlist = arr
-    // this.templist = this.$store.state.detaultlist;
-  },
-  computed: {
-    listc() {
-      return this.testlist[this.page-1]
     },
   },
   methods: {
     ...mapActions("articleModule", {
       artDelete: "del",
     }),
-
-
 
     pags(index) {
       // console.log("pag index", index)
@@ -221,9 +221,9 @@ export default {
       // console.log("index", this.page)
     },
 
-    settemplist(value) {
-      this.templist = value;
-    },
+    // settemplist(value) {
+    //   this.templist = value;
+    // },
 
     opEdit(id) {
       this.$emit("opEdit", id);
@@ -235,7 +235,7 @@ export default {
         this.artDelete({ id: id })
           .then((res) => {
             console.log("delete article res", res);
-            this.list.splice(i, 1);
+            this.artData.list.splice(i, 1);
           })
           .catch((err) => {
             console.log("delete article  err:", err.response);
@@ -243,16 +243,16 @@ export default {
     },
 
     deleteArtList() {
-      this.testlist[this.page-1].forEach((element) => {
+      this.tempList[this.page - 1].forEach((element) => {
         if (element.active) {
-          console.log("delete art ", element.title)
+          console.log("delete art ", element.title);
         }
-      })
+      });
     },
 
     allActives() {
       this.mark = !this.mark;
-      this.testlist[this.page-1].forEach((element) => {
+      this.tempList[this.page - 1].forEach((element) => {
         if (this.mark) {
           element.active = true;
         } else {

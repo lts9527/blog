@@ -68,7 +68,7 @@ const articleModule = {
         list(context, { user_id }) {
             return new Promise((resolve, reject) => {
                 articleService.list({ user_id }).then((res) => {
-                    return res.data.details.list;
+                    return res.data.details;
                 }).then((res) => {
                     resolve(res);
                 }).catch((err) => {

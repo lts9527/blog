@@ -1,5 +1,5 @@
 <template>
-  <ArtList :list="list" :article="article" v-on:opEdit="opEdit"></ArtList>
+  <ArtList :artData="artData" :article="article" v-on:opEdit="opEdit"></ArtList>
 </template>
 
 <script>
@@ -15,20 +15,20 @@ export default {
       tagID: this.$route.params.id,
       edit: false,
       article: {},
-      list: [],
+      artData: [],
     };
   },
   created() {
     // console.log("route name", this.$router.options.routes);
-    if (this.$store.state.artList.length === 0) {
+    if (this.$store.state.artData.length === 0) {
       this.artList({})
         .then((res) => {
           if (res != null) {
-            res.forEach((element) => {
+            res.list.forEach((element) => {
               element.active = false;
             });
-            this.list = res;
-            this.$store.state.artList = JSON.parse(JSON.stringify(res));
+            this.artData = res;
+            this.$store.state.artData = JSON.parse(JSON.stringify(res));
             this.filtrt();
           }
         })
@@ -36,7 +36,7 @@ export default {
           console.log("get article list err:", err);
         });
     } else {
-      this.list = this.$store.state.artList;
+      this.artData = this.$store.state.artData;
       // this.list = JSON.parse(JSON.stringify(this.$store.state.artList));
       this.filtrt();
     }
@@ -46,26 +46,25 @@ export default {
       artList: "list",
     }),
 
-    settemplist(value) {
-      this.list = value;
-      // console.log("value", value);
+    setList(value) {
+      this.artData.list = value;
     },
 
     filtrt() {
       let temp = [];
-      this.list.forEach((element, index) => {
+      this.artData.list.forEach((element, index) => {
         element.tags.forEach((child) => {
           if (child === Number(this.tagID)) {
-            temp.push(this.list[index]);
+            temp.push(this.artData.list[index]);
           }
         });
       });
-      this.list = temp;
+      this.artData.list = temp;
     },
 
     // 打开编辑器
     opEdit(id) {
-      this.list.forEach((element, index) => {
+      this.artData.list.forEach((element, index) => {
         if (element.id === id) {
           this.article = element;
           return;

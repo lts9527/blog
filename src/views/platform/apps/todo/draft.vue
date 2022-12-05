@@ -1,5 +1,5 @@
 <template>
-  <ArtList :list="list" :article="article" v-on:opEdit="opEdit"></ArtList>
+  <ArtList :artData="artData" :article="article" v-on:opEdit="opEdit"></ArtList>
 </template>
 
 <script>
@@ -12,16 +12,16 @@ export default {
     return {
       edit: false,
       article: {},
-      list: [],
+      artData: [],
     };
   },
   created() {
-    this.list = this.$store.state.detaultlist;
+    this.artData = this.$store.state.detaultlist;
   },
   methods: {
     // 打开编辑器
     opEdit(id) {
-      this.list.forEach((element, index) => {
+      this.artData.forEach((element, index) => {
         if (element.id === id) {
           this.article = element;
           return;

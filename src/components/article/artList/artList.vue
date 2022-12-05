@@ -1,6 +1,6 @@
 <template>
   <div>
-    <List v-show="!edit" :list="list" v-on:opEdit="opEdit"></List>
+    <List v-show="!edit" :artData="artData" v-on:opEdit="opEdit"></List>
     <Edit v-if="edit" :article="article" mode="update" v-on:before="returnList">
       <template #item-name>修改文章</template>
     </Edit>
@@ -18,7 +18,7 @@ export default {
   },
   props: {
     article: {},
-    list: [],
+    artData: [],
   },
   data() {
     return {
@@ -27,9 +27,9 @@ export default {
   },
   created() {},
   methods: {
-    settemplist(value) {
-      this.list = value;
-    },
+    // settemplist(value) {
+    //   this.list = value;
+    // },
 
     opEdit(id) {
       this.edit = true;
