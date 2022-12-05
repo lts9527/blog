@@ -26,7 +26,24 @@
                 <v-list-item-title class="text-left font-weight-medium" v-text="item.text"></v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-subheader style="margin-left: -10px">标签</v-subheader>
+
+              <div>             
+                 <v-subheader style="margin-left: -10px;" class="pa-0 ma-0">标签
+                  <p  class="caption ma-0 ml-8" >1 - 2 of 428</p>
+                  <v-list-item-action class="ml-auto">
+                    <v-btn icon small>
+                      <v-icon small color="rgba(0,0,0,.26)">mdi-chevron-left</v-icon>
+                    </v-btn>
+                  </v-list-item-action>
+                  <v-list-item-action class="ma-0 pr-0">
+                    <v-btn icon small>
+                      <v-icon small>mdi-chevron-right</v-icon>
+                    </v-btn>
+                  </v-list-item-action>
+                </v-subheader>
+              </div>
+
+
 
             <div>
               <v-list-item
@@ -138,16 +155,18 @@ export default {
   },
   created() {
     // 请求标签列表
-    this.tagList()
-      .then((tags) => {
-        // this.tags = JSON.parse(JSON.stringify(tags));
-        // this.$store.state.tags = JSON.parse(JSON.stringify(tags));
-        this.tags = tags;
-        this.$store.state.tags = tags;
-      })
-      .catch((err) => {
-        console.log("get article list err:", err);
-      });
+    // this.tagList()
+    //   .then((tags) => {
+    //     // this.tags = JSON.parse(JSON.stringify(tags));
+    //     // this.$store.state.tags = JSON.parse(JSON.stringify(tags));
+    //     this.tags = tags;
+    //     this.$store.state.tags = tags;
+    //   })
+    //   .catch((err) => {
+    //     console.log("get article list err:", err);
+    //   });
+      this.tags = this.$store.state.tags;
+
   },
   // 初始化文章列表
   mounted() {

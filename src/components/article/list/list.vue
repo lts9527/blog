@@ -21,7 +21,7 @@
       <v-card flat>
         <v-list-item style="height: 80px;">
           <v-list-item-action class="ma-0" @click="allActives">
-            <v-checkbox :input-value="active" color="primary"></v-checkbox>
+            <v-checkbox @click="activeAll = !activeAll" :input-value="active" color="primary"></v-checkbox>
           </v-list-item-action>
           <v-list-item-action class="ml-2">
             <v-btn icon>
@@ -30,7 +30,8 @@
           </v-list-item-action>
           <v-list-item-action class="ma-0">
             <v-btn icon>
-              <v-icon>mdi-reload</v-icon>
+              <v-icon v-show="!activeAll">mdi-reload</v-icon>
+              <v-icon v-show="activeAll" @click="deleteArtList">mdi-delete-outline</v-icon>
             </v-btn>
           </v-list-item-action>
           <p style="position: absolute;right: 100px;" class="caption ma-0">1 - 2 of 428</p>
@@ -50,7 +51,7 @@
       <v-divider></v-divider>
       <v-list class="pa-0">
         <v-card flat>
-          <template v-for="(item,i) in list">
+          <template v-for="(item,i) in listc">
             <v-list-item
               :color="item.active ? 'blue' : ''"
               :input-value="item.active"
@@ -140,8 +141,8 @@
         </v-card>
       </v-list>
 
-      <div id="paging-bar">
-        <v-pagination circle v-model="page" :length="15" :total-visible="9"></v-pagination>
+      <div id="paging-bar" @click.stop="pags(page)">
+        <v-pagination  v-on:next="next" circle v-model="page" :length="15" :total-visible="9"></v-pagination>
       </div>
     </div>
   </div>
@@ -156,7 +157,9 @@ export default {
     return {
       page: 1,
       active: [],
+      testlist: [],
       mark: false,
+      activeAll: false,
       details: [
         {
           name: "浏览",
@@ -177,13 +180,46 @@ export default {
     };
   },
   created() {
+      let num = 0;
+      let index = 0;
+      var arr = new Array();
+      for(var i=0;i<5;i++){        //一维长度为5
+          arr[i] = new Array();
+        //   for(var j=0;j<4;j++){    //二维长度为5
+        //       arr[i][j] = 0;
+        // }
+      }
+      const list = this.$store.state.detaultlist
+      for (let i = 0, len = list.length; i < len; i++) {
+        if (num === 4) {
+          num = 0;
+          index++;
+        }
+        arr[index].push(list[i])
+        num++
+      }
+      this.testlist = arr
     // this.templist = this.$store.state.detaultlist;
   },
-  computed: {},
+  computed: {
+    listc() {
+      return this.testlist[this.page-1]
+    },
+  },
   methods: {
     ...mapActions("articleModule", {
       artDelete: "del",
     }),
+
+
+
+    pags(index) {
+      // console.log("pag index", index)
+    },
+
+    next(index) {
+      // console.log("index", this.page)
+    },
 
     settemplist(value) {
       this.templist = value;
@@ -206,9 +242,17 @@ export default {
           });
     },
 
+    deleteArtList() {
+      this.testlist[this.page-1].forEach((element) => {
+        if (element.active) {
+          console.log("delete art ", element.title)
+        }
+      })
+    },
+
     allActives() {
       this.mark = !this.mark;
-      this.list.forEach((element) => {
+      this.testlist[this.page-1].forEach((element) => {
         if (this.mark) {
           element.active = true;
         } else {

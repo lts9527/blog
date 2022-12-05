@@ -19,27 +19,30 @@ export default {
     };
   },
   created() {
+
+    this.list = this.$store.state.detaultlist;
+
     // console.log(
     //   "articles this.$store.state.artList",
     //   this.$store.state.artList
     // );
-    if (this.$store.state.artList.length === 0) {
-      this.artList({})
-        .then((res) => {
-          if (res != null) {
-            res.forEach((element) => {
-              element.active = false;
-            });
-            this.list = JSON.parse(JSON.stringify(res));
-            this.$store.state.artList = JSON.parse(JSON.stringify(res));
-          }
-        })
-        .catch((err) => {
-          console.log("get article list err:", err.response);
-        });
-    } else {
-      this.list = JSON.parse(JSON.stringify(this.$store.state.artList));
-    }
+    // if (this.$store.state.artList.length === 0) {
+    //   this.artList({})
+    //     .then((res) => {
+    //       if (res != null) {
+    //         res.forEach((element) => {
+    //           element.active = false;
+    //         });
+    //         this.list = JSON.parse(JSON.stringify(res));
+    //         this.$store.state.artList = JSON.parse(JSON.stringify(res));
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       console.log("get article list err:", err.response);
+    //     });
+    // } else {
+    //   this.list = JSON.parse(JSON.stringify(this.$store.state.artList));
+    // }
   },
   methods: {
     ...mapActions("articleModule", {
