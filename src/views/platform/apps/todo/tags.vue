@@ -20,8 +20,6 @@ export default {
     };
   },
   created() {
-    console.log("1118988989989");
-    // console.log("route name", this.$router.options.routes);
     if (this.$store.state.artData.length === 0) {
       this.artList({})
         .then((res) => {
@@ -38,8 +36,8 @@ export default {
           console.log("get article list err:", err);
         });
     } else {
-      this.artData = this.$store.state.artData;
-      // this.list = JSON.parse(JSON.stringify(this.$store.state.artList));
+      // this.artData = this.$store.state.artData;
+      this.artData = JSON.parse(JSON.stringify(this.$store.state.artData));
       this.filtrt();
     }
   },
@@ -49,7 +47,6 @@ export default {
     }),
 
     setList(value) {
-      console.log("value", value);
       this.artData.list = value;
       if (value.length == 0) {
         this.pagination = false;

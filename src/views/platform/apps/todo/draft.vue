@@ -1,5 +1,5 @@
 <template>
-  <ArtList :artData="artData" :article="article" v-on:opEdit="opEdit"></ArtList>
+  <ArtList :pagination="pagination" :artData="artData" :article="article" v-on:opEdit="opEdit"></ArtList>
 </template>
 
 <script>
@@ -13,9 +13,10 @@ export default {
       edit: false,
       article: {},
       artData: [],
+      pagination: true,
     };
   },
-  created() {
+  mounted() {
     this.artData = this.$store.state.detaultlist;
   },
   methods: {

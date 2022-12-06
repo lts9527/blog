@@ -20,12 +20,6 @@ export default {
     };
   },
   created() {
-    // this.list = this.$store.state.detaultlist;
-
-    // console.log(
-    //   "articles this.$store.state.artList",
-    //   this.$store.state.artList
-    // );
     if (this.$store.state.artData.length === 0) {
       this.artList({})
         .then((res) => {
@@ -33,9 +27,9 @@ export default {
             res.list.forEach((element) => {
               element.active = false;
             });
-            console.log("Res", res);
             this.artData = JSON.parse(JSON.stringify(res));
             this.$store.state.artData = JSON.parse(JSON.stringify(res));
+            console.log("this.artData ", this.artData);
           }
         })
         .catch((err) => {

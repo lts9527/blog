@@ -181,12 +181,11 @@ export default {
     // 获取当前页数的文章列表
     listc() {
       if (this.artData.list == undefined) {
-        // this.pagination = false;
         return;
       }
       let num = 0;
       let index = 0;
-      let last = Number(pagerCount(this.artData.total, 4));
+      let last = Number(pagerCount(this.artData.list.length, 4));
       let arr = new Array();
       const art = JSON.parse(JSON.stringify(this.artData));
 
@@ -206,8 +205,6 @@ export default {
           arr[index].push(art.list[i]);
           num++;
         }
-
-        // console.log("index", index);
         this.tempList = arr;
         // 返回当前页数的文章
         return this.tempList[this.page - 1];
@@ -226,10 +223,6 @@ export default {
     next(index) {
       // console.log("index", this.page)
     },
-
-    // settemplist(value) {
-    //   this.templist = value;
-    // },
 
     opEdit(id) {
       this.$emit("opEdit", id);

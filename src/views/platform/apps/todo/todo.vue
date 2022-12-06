@@ -202,7 +202,6 @@ export default {
       }
       // let list = this.$store.state.artData.list;
       let list = JSON.parse(JSON.stringify(this.$store.state.artData.list));
-      console.log("list", list);
       let templist = [];
       for (let i = 0, len = list.length; i < len; i++) {
         list[i].tags.forEach((element) => {

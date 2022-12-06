@@ -28,10 +28,6 @@ export default {
   },
   created() {},
   methods: {
-    // settemplist(value) {
-    //   this.list = value;
-    // },
-
     opEdit(id) {
       this.edit = true;
       this.$emit("opEdit", id);
