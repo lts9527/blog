@@ -30,14 +30,14 @@
             <div>
               <v-subheader style="margin-left: -10px;" class="pa-0 ma-0">
                 标签
-                <p class="caption ma-0 ml-8">1 - 2 of 428</p>
+                <p class="caption ma-0 ml-12">{{page}} of {{lastPage}}</p>
                 <v-list-item-action class="ml-auto">
-                  <v-btn icon small>
+                  <v-btn icon small @click="previous" :disabled="page == 1 ? true: false">
                     <v-icon small color="rgba(0,0,0,.26)">mdi-chevron-left</v-icon>
                   </v-btn>
                 </v-list-item-action>
                 <v-list-item-action class="ma-0 pr-0">
-                  <v-btn icon small>
+                  <v-btn icon small @click="next" :disabled="page == lastPage ? true: false">
                     <v-icon small>mdi-chevron-right</v-icon>
                   </v-btn>
                 </v-list-item-action>
@@ -46,13 +46,9 @@
 
             <v-list-item
               @click="separator(itemTag.name, itemTag.id)"
-              :to="{
-        name: `tags`,
-        params: { id: itemTag.id },
-      }"
               dense
               class="width-208 height-40"
-              v-for="(itemTag, i) in tags"
+              v-for="(itemTag, i) in tagsc"
               :key="itemTag.name"
             >
               <v-list-item-icon>
@@ -61,7 +57,7 @@
               <v-list-item-content>
                 <v-list-item-title class="font-weight-medium text-caption" v-text="itemTag.name"></v-list-item-title>
               </v-list-item-content>
-              <!-- <v-list-item-action class="pa-0 px-0">
+              <v-list-item-action class="pa-0 px-0">
                 <v-menu transition="fade-transition" offset-y>
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn icon small @click="edit = true" v-bind="attrs" v-on="on">
@@ -81,40 +77,42 @@
                     </v-list-item>
                   </v-list>
                 </v-menu>
-              </v-list-item-action>-->
+              </v-list-item-action>
             </v-list-item>
 
-            <v-card v-show="tag" height="105px" width="100%" class="mb-5 mt-2 shadow-1">
-              <v-text-field
-                dense
-                autofocus
-                v-model="editedTag.name"
-                height="28"
-                hide-details="auto"
-                placeholder="输入标签名称"
-                class="mt-2 pt-4 text-caption px-5"
-              ></v-text-field>
-              <v-card-actions class="px-5 mt-2">
-                <v-spacer>
+            <v-dialog v-model="tag" width="250">
+              <v-card height="120" width="100%" class="pb-5 pt-2 shadow-1">
+                <v-text-field
+                  dense
+                  autofocus
+                  v-model="editedTag.name"
+                  height="28"
+                  hide-details="auto"
+                  placeholder="输入标签名称"
+                  class="mt-2 pt-4 text-caption px-5"
+                ></v-text-field>
+                <v-card-actions class="px-5 mt-2">
+                  <v-spacer>
+                    <v-btn
+                      width="70"
+                      color="#FFFFFF"
+                      class="black--text shadow"
+                      small
+                      depressed
+                      @click="close"
+                    >取消</v-btn>
+                  </v-spacer>
                   <v-btn
                     width="70"
-                    color="#FFFFFF"
-                    class="black--text shadow"
+                    color="#3295C5"
+                    class="white--text"
                     small
                     depressed
-                    @click="close"
-                  >取消</v-btn>
-                </v-spacer>
-                <v-btn
-                  width="70"
-                  color="#3295C5"
-                  class="white--text"
-                  small
-                  depressed
-                  @click="save"
-                >确定</v-btn>
-              </v-card-actions>
-            </v-card>
+                    @click="save"
+                  >确定</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </v-list-item-group>
         </v-list>
       </v-card>
@@ -127,11 +125,14 @@
 
 <script>
 import { mapActions } from "vuex";
+import { pagerCount } from "@/utils/utils.js";
 export default {
   data() {
     return {
       tag: false,
       edit: false,
+      page: 1,
+      lastPage: 0,
       selectedItem: 0,
       editedIndex: -1,
       editedTag: {
@@ -169,6 +170,41 @@ export default {
       });
     // this.tags = this.$store.state.tags;
   },
+  computed: {
+    // 获取当前页数的标签列表
+    tagsc() {
+      if (this.tags.length == 0) {
+        return;
+      }
+      let num = 0;
+      let index = 0;
+      let arr = new Array();
+      let last = Number(pagerCount(this.tags.length, 9));
+      let art = JSON.parse(JSON.stringify(this.tags));
+
+      if (art.length != 0) {
+        this.lastPage = last;
+        // 根据最后页码生成分页的二维数组大小
+        for (let i = 0; i < last; i++) {
+          // 二维数组
+          arr[i] = new Array();
+        }
+
+        // 以8个标签为一页添加
+        for (let i = 0, len = art.length; i < len; i++) {
+          if (num === 9) {
+            num = 0;
+            index++;
+          }
+          arr[index].push(art[i]);
+          num++;
+        }
+        this.tempTags = arr;
+        // 返回当前页数的标签列表
+        return this.tempTags[this.page - 1];
+      }
+    },
+  },
   // 初始化文章列表
   mounted() {
     // this.defaultList();
@@ -184,6 +220,20 @@ export default {
     ...mapActions("articleModule", {
       artList: "list",
     }),
+
+    previous() {
+      if (this.page === 1) {
+        return;
+      }
+      this.page--;
+    },
+
+    next() {
+      if (this.page === this.lastPage) {
+        return;
+      }
+      this.page++;
+    },
 
     jump(name, i) {
       if (name === "articles") {
@@ -214,10 +264,10 @@ export default {
       if (this.$refs.child.setList) {
         this.$refs.child.setList(templist);
       }
-      // this.$router.push({
-      //   name: `tags`,
-      //   params: { id: id },
-      // });
+      this.$router.push({
+        name: `tags`,
+        params: { id: id },
+      });
     },
 
     delTag(id, i) {
@@ -238,6 +288,7 @@ export default {
     },
 
     save() {
+      let exist = false;
       if (this.editedTag.name === "") {
         return;
       }
@@ -256,9 +307,13 @@ export default {
           });
       } else {
         for (let i = 0, len = this.tags.length; i < len; i++) {
-          if (this.editedTag.name === this.tags[i].text) {
-            return;
+          if (this.editedTag.name === this.tags[i].name) {
+            exist = true;
+            break;
           }
+        }
+        if (exist) {
+          return;
         }
         let name = this.editedTag.name;
         this.addTag({ name: this.editedTag.name })

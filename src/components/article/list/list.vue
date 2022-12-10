@@ -216,7 +216,7 @@ export default {
       artDelete: "del",
     }),
 
-    pags(index) {
+    previous(index) {
       // console.log("pag index", index)
     },
 
